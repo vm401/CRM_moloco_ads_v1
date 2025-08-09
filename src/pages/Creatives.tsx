@@ -81,7 +81,7 @@ export default function Creatives() {
         console.log('🔄 Fetching creative data from CSV processor...');
         
         // Получаем данные напрямую из /reports (новый API) с принудительным обновлением
-                  const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://crm-moloco-ads-v1-production.up.railway.app' : 'http://localhost:8000'}/reports?` + Date.now(), {
+                  const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'

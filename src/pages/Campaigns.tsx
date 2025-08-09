@@ -84,7 +84,7 @@ export default function Campaigns() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 секунды таймаут
         
-                          const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://crm-moloco-ads-v1-production.up.railway.app' : 'http://localhost:8000'}/reports?` + Date.now(), {
+                          const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'
