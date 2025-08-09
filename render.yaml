@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: moloco-crm-backend
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "cd backend && uvicorn fastapi_main:app --host 0.0.0.0 --port $PORT"
+    plan: free
+    branch: main
+    rootDir: .
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.5"
