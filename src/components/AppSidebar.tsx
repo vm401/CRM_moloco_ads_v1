@@ -42,7 +42,7 @@ export function AppSidebar() {
       console.log('🔄 Starting to clear reports...');
       toast.loading("Очищаю отчеты...");
       
-      const response = await fetch('http://localhost:8000/clear-reports', {
+      const response = await fetch(`${import.meta.env.PROD ? 'https://crm-moloco-ads-v1-production.up.railway.app' : 'http://localhost:8000'}/clear-reports`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

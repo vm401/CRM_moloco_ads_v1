@@ -94,7 +94,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const reportsResponse = await fetch('http://localhost:8000/reports?' + Date.now(), {
+                  const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://crm-moloco-ads-v1-production.up.railway.app' : 'http://localhost:8000'}/reports?` + Date.now(), {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'
