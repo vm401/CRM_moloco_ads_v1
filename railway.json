@@ -9,7 +9,7 @@
           "nixPkgs": ["python311"]
         },
         "install": {
-          "cmds": ["pip install -r requirements.txt"]
+          "cmds": ["python3 -m pip install -r requirements.txt"]
         }
       }
     }
