@@ -31,21 +31,8 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173", "http://localhost:5174", "http://localhost:5175",
-        "http://localhost:5176", "http://localhost:5177", "http://localhost:5180",
-        "http://localhost:8080", "http://localhost:8081", "http://localhost:3000",
-        "http://127.0.0.1:5173", "http://127.0.0.1:5174", "http://127.0.0.1:5175",
-        "http://127.0.0.1:5176", "http://127.0.0.1:5177", "http://127.0.0.1:5180",
-        "http://127.0.0.1:8080", "http://127.0.0.1:8081", "http://127.0.0.1:3000",
-        # Production URLs
-        "https://crm-moloco-r3c-uso.vercel.app",
-        "https://*.vercel.app",
-        "https://moloco-crm-frontend.vercel.app",
-        "https://crm-moloco-ads-v1.vercel.app",
-        "https://*.railway.app"
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],  # TEMPORARY: Allow all origins for debugging
+    allow_credentials=False,  # Must be False when using allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )
