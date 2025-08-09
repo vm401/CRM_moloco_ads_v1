@@ -41,6 +41,8 @@ app.add_middleware(
         # Production URLs
         "https://crm-moloco-r3c-uso.vercel.app",
         "https://*.vercel.app",
+        "https://moloco-crm-frontend.vercel.app",
+        "https://crm-moloco-ads-v1.vercel.app",
         "https://*.railway.app"
     ],
     allow_credentials=True,
