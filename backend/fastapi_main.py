@@ -25,8 +25,8 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# Add compression middleware for better performance
-app.add_middleware(GZipMiddleware, minimum_size=1000)
+# Add compression middleware for better performance (aggressive compression for Render)
+app.add_middleware(GZipMiddleware, minimum_size=500)  # Compress smaller responses too
 
 # Add CORS middleware
 app.add_middleware(
@@ -51,8 +51,8 @@ aggregated_data_cache = {
     'timestamp': None
 }
 
-# Thread pool for CPU-intensive operations
-executor = ThreadPoolExecutor(max_workers=2)
+# Thread pool for CPU-intensive operations (optimized for Render free tier)
+executor = ThreadPoolExecutor(max_workers=1)  # Reduce to 1 worker for 0.1 vCPU
 
 def load_existing_reports():
     """Load existing processed reports from uploads directory"""
@@ -118,7 +118,20 @@ async def root():
     return {
         "message": "Moloco Dashboard API v2.0",
         "status": "running",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
+        "performance": {
+            "reports_loaded": len(processed_reports),
+            "cache_status": "active" if aggregated_data_cache['data'] is not None else "empty"
+        }
+    }
+
+@app.get("/keepalive")
+async def keepalive():
+    """Keep-alive endpoint to prevent Render from sleeping"""
+    return {
+        "status": "alive",
+        "timestamp": datetime.now().isoformat(),
+        "uptime": "active"
     }
 
 @app.post("/upload")
@@ -322,11 +335,11 @@ def aggregate_all_reports_data():
     reports_hash = hashlib.md5(str(len(processed_reports)).encode()).hexdigest()
     current_time = datetime.now()
     
-    # Check if we have valid cached data (less than 5 minutes old)
+    # Check if we have valid cached data (less than 15 minutes old for Render performance)
     if (aggregated_data_cache['data'] is not None and 
         aggregated_data_cache['hash'] == reports_hash and
         aggregated_data_cache['timestamp'] and
-        (current_time - aggregated_data_cache['timestamp']).seconds < 300):
+        (current_time - aggregated_data_cache['timestamp']).seconds < 900):
         print("🚀 Using cached aggregated data")
         return aggregated_data_cache['data']
     
