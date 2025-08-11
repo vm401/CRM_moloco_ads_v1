@@ -106,6 +106,12 @@ def load_existing_reports():
 load_existing_reports()
 print(f"📊 Loaded {len(processed_reports)} existing reports")
 
+# FORCE CLEAR CACHE ON STARTUP FOR RENDER
+aggregated_data_cache['data'] = None
+aggregated_data_cache['hash'] = None
+aggregated_data_cache['timestamp'] = None
+print("🔄 Cleared aggregated data cache on startup")
+
 @app.get("/")
 async def root():
     """Health check endpoint"""
@@ -184,6 +190,12 @@ async def upload_csv(
         
         # Store report info
         processed_reports.append(report_info)
+        
+        # FORCE CLEAR CACHE AFTER NEW UPLOAD
+        aggregated_data_cache['data'] = None
+        aggregated_data_cache['hash'] = None
+        aggregated_data_cache['timestamp'] = None
+        print("🔄 Cleared cache after new file upload")
         
         return {
             "success": True,
@@ -292,6 +304,7 @@ async def get_report_data(report_id: int):
 def aggregate_all_reports_data():
     """Aggregate data from all loaded reports and create daily breakdown"""
     global aggregated_data_cache
+    start_time = datetime.now()
     
     if not processed_reports:
         return {
@@ -309,11 +322,11 @@ def aggregate_all_reports_data():
     reports_hash = hashlib.md5(str(len(processed_reports)).encode()).hexdigest()
     current_time = datetime.now()
     
-    # Check if we have valid cached data (less than 30 seconds old)
+    # Check if we have valid cached data (less than 5 minutes old)
     if (aggregated_data_cache['data'] is not None and 
         aggregated_data_cache['hash'] == reports_hash and
         aggregated_data_cache['timestamp'] and
-        (current_time - aggregated_data_cache['timestamp']).seconds < 30):
+        (current_time - aggregated_data_cache['timestamp']).seconds < 300):
         print("🚀 Using cached aggregated data")
         return aggregated_data_cache['data']
     
@@ -353,9 +366,20 @@ def aggregate_all_reports_data():
             with open(latest_reports['reports']['report_path'], 'r') as f:
                 reports_data = json.load(f)
                 aggregated_data['overview'] = reports_data.get('overview', {})
-                aggregated_data['top_campaigns'] = reports_data.get('top_campaigns', [])
-                aggregated_data['creative_performance'] = reports_data.get('creative_performance', {'top_performers': []})
-                aggregated_data['exchange_performance'] = reports_data.get('exchange_performance', [])
+                # PERFORMANCE: Limit campaigns to top 50 for faster loading
+                all_campaigns = reports_data.get('top_campaigns', [])
+                aggregated_data['top_campaigns'] = all_campaigns[:50] if len(all_campaigns) > 50 else all_campaigns
+                
+                # PERFORMANCE: Limit creatives to top 30 for faster loading  
+                creative_data = reports_data.get('creative_performance', {'top_performers': []})
+                if len(creative_data.get('top_performers', [])) > 30:
+                    creative_data['top_performers'] = creative_data['top_performers'][:30]
+                aggregated_data['creative_performance'] = creative_data
+                
+                # PERFORMANCE: Limit exchanges to top 20 for faster loading
+                all_exchanges = reports_data.get('exchange_performance', [])
+                aggregated_data['exchange_performance'] = all_exchanges[:20] if len(all_exchanges) > 20 else all_exchanges
+                
                 aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
                 aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
         except Exception as e:
@@ -366,7 +390,20 @@ def aggregate_all_reports_data():
         try:
             with open(latest_inventory['overall']['report_path'], 'r') as f:
                 inventory_data = json.load(f)
-                aggregated_data['inventory_app_analysis'] = inventory_data.get('inventory_app_analysis', {'apps': [], 'categories': [], 'total_apps': 0})
+                full_inventory = inventory_data.get('inventory_app_analysis', {'apps': [], 'categories': [], 'total_apps': 0})
+                
+                # PERFORMANCE OPTIMIZATION: Limit apps to top 100 by spend for faster loading
+                apps = full_inventory.get('apps', [])
+                if len(apps) > 100:
+                    # Sort by spend and take top 100
+                    apps = sorted(apps, key=lambda x: x.get('Spend', 0), reverse=True)[:100]
+                    print(f"⚡ Limited inventory apps from {full_inventory.get('total_apps', 0)} to {len(apps)} for performance")
+                
+                aggregated_data['inventory_app_analysis'] = {
+                    'apps': apps,
+                    'categories': full_inventory.get('categories', [])[:50],  # Limit categories too
+                    'total_apps': full_inventory.get('total_apps', 0)  # Keep real total for stats
+                }
         except Exception as e:
             print(f"❌ Error loading inventory overall data: {e}")
     
@@ -415,6 +452,11 @@ def aggregate_all_reports_data():
     aggregated_data_cache['data'] = aggregated_data
     aggregated_data_cache['hash'] = reports_hash
     aggregated_data_cache['timestamp'] = current_time
+    
+    # Log performance metrics
+    end_time = datetime.now()
+    processing_time = (end_time - start_time).total_seconds()
+    print(f"⚡ Aggregated data in {processing_time:.2f}s - Apps: {len(aggregated_data['inventory_app_analysis']['apps'])}, Campaigns: {len(aggregated_data['top_campaigns'])}, Creatives: {len(aggregated_data['creative_performance']['top_performers'])}")
     print("💾 Cached aggregated data for future requests")
     
     return aggregated_data
