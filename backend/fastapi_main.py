@@ -358,10 +358,8 @@ def aggregate_all_reports_data():
                 all_campaigns = reports_data.get('top_campaigns', [])
                 aggregated_data['top_campaigns'] = all_campaigns[:50] if len(all_campaigns) > 50 else all_campaigns
                 
-                # PERFORMANCE: Limit creatives to top 30 for faster loading  
+                # Keep all creatives from reports (already limited to top 20 by spend in processor)
                 creative_data = reports_data.get('creative_performance', {'top_performers': []})
-                if len(creative_data.get('top_performers', [])) > 30:
-                    creative_data['top_performers'] = creative_data['top_performers'][:30]
                 aggregated_data['creative_performance'] = creative_data
                 
                 # PERFORMANCE: Limit exchanges to top 20 for faster loading
