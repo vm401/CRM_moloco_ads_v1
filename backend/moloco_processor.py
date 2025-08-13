@@ -279,6 +279,9 @@ class MolocoCSVProcessor:
         
         # Creative performance - safe aggregation
         if 'Creative' in self.df.columns:
+            print(f"🎨 Processing {self.df['Creative'].nunique()} unique creatives from {len(self.df)} rows")
+            print(f"🎨 Sample creative data:")
+            print(self.df[['Creative', 'Spend', 'Install'] + (['Action'] if 'Action' in self.df.columns else [])].head(3).to_string())
             creative_agg = {'Spend': 'sum'}
             if 'Install' in self.df.columns:
                 creative_agg['Install'] = 'sum'
@@ -383,6 +386,12 @@ class MolocoCSVProcessor:
             else:
                 creative_stats['Performance'] = 'Unknown'
                 
+            # DEBUG: Print creative stats before converting
+            print(f"🔍 Creative stats shape: {creative_stats.shape}")
+            print(f"🔍 First 3 creative stats:")
+            print(creative_stats.head(3).to_string())
+            print(f"🔍 Creative stats columns: {list(creative_stats.columns)}")
+            
             top_creatives = creative_stats.nsmallest(20, 'CPI').to_dict('records')
         else:
             top_creatives = []

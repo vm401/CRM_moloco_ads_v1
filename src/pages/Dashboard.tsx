@@ -93,25 +93,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const controller = new AbortController();
-      
-      // Force stop loading after 8 seconds
-      const forceStopLoading = setTimeout(() => {
-        console.warn('Dashboard: Force stopping loading after 8s timeout');
-        setLoading(false);
-        controller.abort();
-      }, 8000);
-
       try {
-        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
+                  const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'
-          },
-          signal: controller.signal
+          }
         });
-        
-        clearTimeout(forceStopLoading);
         const reports = await reportsResponse.json();
         
         if (reports.success) {
@@ -130,12 +118,7 @@ const Dashboard = () => {
           });
         }
       } catch (error) {
-        clearTimeout(forceStopLoading);
-        if (error.name === 'AbortError') {
-          console.warn('Dashboard: Request aborted due to timeout');
-        } else {
-          console.error('Error fetching data:', error);
-        }
+        console.error('Error fetching data:', error);
         // Fallback data for demo
         setData({
           overview: {

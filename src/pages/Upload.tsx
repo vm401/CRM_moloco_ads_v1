@@ -42,8 +42,6 @@ export default function Upload() {
           fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/upload`, {
             method: 'POST',
             body: formData,
-            // Increase timeout for large CSV files on Render
-            signal: AbortSignal.timeout(120000) // 2 minutes
           })
         );
       }
@@ -58,8 +56,6 @@ export default function Upload() {
           fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/upload`, {
             method: 'POST',
             body: formData,
-            // Increase timeout for large CSV files on Render
-            signal: AbortSignal.timeout(120000) // 2 minutes
           })
         );
       }
@@ -74,8 +70,6 @@ export default function Upload() {
           fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/upload`, {
             method: 'POST',
             body: formData,
-            // Increase timeout for large CSV files on Render
-            signal: AbortSignal.timeout(120000) // 2 minutes
           })
         );
       }
