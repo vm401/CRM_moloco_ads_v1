@@ -281,7 +281,17 @@ class MolocoCSVProcessor:
         if 'Creative' in self.df.columns:
             print(f"🎨 Processing {self.df['Creative'].nunique()} unique creatives from {len(self.df)} rows")
             print(f"🎨 Sample creative data:")
-            print(self.df[['Creative', 'Spend', 'Install'] + (['Action'] if 'Action' in self.df.columns else [])].head(3).to_string())
+            print(self.df[['Creative', 'Spend', 'Install'] + (['Action'] if 'Action' in self.df.columns else [])].head(5).to_string())
+            
+            # Check for duplicates and data issues
+            creative_value_counts = self.df['Creative'].value_counts()
+            print(f"🎨 Creative frequency:")
+            print(creative_value_counts.head(10).to_string())
+            
+            # Check total spend per creative BEFORE grouping
+            creative_spend_check = self.df.groupby('Creative')['Spend'].sum().sort_values(ascending=False)
+            print(f"🎨 Top creatives by spend (BEFORE processing):")
+            print(creative_spend_check.head(5).to_string())
             creative_agg = {'Spend': 'sum'}
             if 'Install' in self.df.columns:
                 creative_agg['Install'] = 'sum'
@@ -311,6 +321,11 @@ class MolocoCSVProcessor:
                 creative_agg['3Q(75%) View'] = 'sum'
                 
             creative_stats = self.df.groupby('Creative').agg(creative_agg).reset_index()
+            
+            # DEBUG: Check results AFTER grouping
+            print(f"🔍 After grouping - creative_stats shape: {creative_stats.shape}")
+            print(f"🔍 Top 5 creatives after grouping:")
+            print(creative_stats.nlargest(5, 'Spend')[['Creative', 'Spend', 'Install'] + (['Action'] if 'Action' in creative_stats.columns else [])].to_string())
             
             # Rename impression column to 'Impressions' for consistency
             if impression_col_found and impression_col_found != 'Impressions':
