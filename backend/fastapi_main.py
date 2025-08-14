@@ -423,26 +423,56 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
         'inventory_app_analysis': {'apps': [], 'categories': [], 'total_apps': 0}
     }
     
-    # Load reports data
-    if 'reports' in latest_reports:
-        try:
-            with open(latest_reports['reports']['report_path'], 'r') as f:
-                reports_data = json.load(f)
-                aggregated_data['overview'] = reports_data.get('overview', {})
-                # PERFORMANCE: Limit campaigns to top 50 for faster loading
-                all_campaigns = reports_data.get('top_campaigns', [])
-                aggregated_data['top_campaigns'] = all_campaigns[:50] if len(all_campaigns) > 50 else all_campaigns
-                
-                # Keep all creatives from reports (already limited to top 20 by spend in processor)
-                creative_data = reports_data.get('creative_performance', {'top_performers': []})
-                aggregated_data['creative_performance'] = creative_data
-                
-                # PERFORMANCE: Limit exchanges to top 20 for faster loading
-                all_exchanges = reports_data.get('exchange_performance', [])
-                aggregated_data['exchange_performance'] = all_exchanges[:20] if len(all_exchanges) > 20 else all_exchanges
-                
-                aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
-                aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
+                        # Load reports data and apply date filtering
+        if 'reports' in latest_reports:
+            try:
+                # Re-process the CSV with date filtering if needed
+                if date_filter or start_date or end_date:
+                    print(f"🔄 Re-processing reports CSV with date filter")
+                    # Find the original CSV file
+                    csv_file = latest_reports['reports']['report_path'].replace('_report.json', '.csv')
+                    if os.path.exists(csv_file):
+                        from moloco_processor import MolocoCSVProcessor
+                        processor = MolocoCSVProcessor()
+                        processor.load_csv(csv_file)
+                        filtered_data = processor.process_reports_csv(date_filter, start_date, end_date)
+                        
+                        aggregated_data['overview'] = filtered_data.get('overview', {})
+                        aggregated_data['top_campaigns'] = filtered_data.get('top_campaigns', [])[:50]
+                        aggregated_data['creative_performance'] = filtered_data.get('creative_performance', {'top_performers': []})
+                        aggregated_data['exchange_performance'] = filtered_data.get('exchange_performance', [])[:20]
+                        aggregated_data['geographic_performance'] = filtered_data.get('geographic_performance', [])
+                        aggregated_data['gambling_insights'] = filtered_data.get('gambling_insights', {})
+                    else:
+                        print(f"⚠️ Original CSV not found: {csv_file}")
+                        # Fallback to cached data
+                        with open(latest_reports['reports']['report_path'], 'r') as f:
+                            reports_data = json.load(f)
+                            aggregated_data['overview'] = reports_data.get('overview', {})
+                            aggregated_data['top_campaigns'] = reports_data.get('top_campaigns', [])[:50]
+                            aggregated_data['creative_performance'] = reports_data.get('creative_performance', {'top_performers': []})
+                            aggregated_data['exchange_performance'] = reports_data.get('exchange_performance', [])[:20]
+                            aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
+                            aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
+                else:
+                    # Use cached data without filtering
+                    with open(latest_reports['reports']['report_path'], 'r') as f:
+                        reports_data = json.load(f)
+                        aggregated_data['overview'] = reports_data.get('overview', {})
+                        # PERFORMANCE: Limit campaigns to top 50 for faster loading
+                        all_campaigns = reports_data.get('top_campaigns', [])
+                        aggregated_data['top_campaigns'] = all_campaigns[:50] if len(all_campaigns) > 50 else all_campaigns
+                        
+                        # Keep all creatives from reports (already limited to top 20 by spend in processor)
+                        creative_data = reports_data.get('creative_performance', {'top_performers': []})
+                        aggregated_data['creative_performance'] = creative_data
+                        
+                        # PERFORMANCE: Limit exchanges to top 20 for faster loading
+                        all_exchanges = reports_data.get('exchange_performance', [])
+                        aggregated_data['exchange_performance'] = all_exchanges[:20] if len(all_exchanges) > 20 else all_exchanges
+                        
+                        aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
+                        aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
         except Exception as e:
             print(f"❌ Error loading reports data: {e}")
     

@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import RowFilter from "@/components/RowFilter";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { useDebounce } from "@/hooks/useDebounce";
 
 // Полный интерфейс для Campaign из CSV
@@ -56,6 +57,10 @@ export default function Campaigns() {
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [sortBy, setSortBy] = useState<string>('Spend');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [dateRange, setDateRange] = useState<{start: Date | null, end: Date | null}>({
+    start: null,
+    end: null
+  });
   
   // Drag & Drop состояния
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
