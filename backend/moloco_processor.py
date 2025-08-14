@@ -132,7 +132,7 @@ class MolocoCSVProcessor:
                 'error': str(e)
             }
     
-    def process_reports_csv(self, date_filter: str = None, start_date: str = None, end_date: str = None) -> Dict[str, Any]:
+    def process_reports_csv(self, date_filter: str = None, start_date: str = None, end_date: str = None, country: str = None) -> Dict[str, Any]:
         """Process Reports CSV type with optional date filtering
         
         Args:
@@ -172,8 +172,23 @@ class MolocoCSVProcessor:
             if len(self.df) == 0:
                 filter_desc = date_filter or f"{start_date} to {end_date}" if end_date else f"from {start_date}"
                 print(f"⚠️ No data found for date filter: {filter_desc}")
+        
+        # Apply country filtering if specified
+        if country and 'Countries' in self.df.columns:
+            original_rows_country = len(self.df)
+            # Convert country code to uppercase for matching
+            country_code = country.upper()
+            print(f"🌍 DEBUG: Filtering by country: {country_code}")
+            print(f"🌍 DEBUG: Available countries: {self.df['Countries'].unique()[:10]}")
+            
+            # Filter by country code (exact match)
+            self.df = self.df[self.df['Countries'] == country_code]
+            print(f"🌍 Country filter '{country_code}': {original_rows_country} → {len(self.df)} rows")
+            
+            if len(self.df) == 0:
+                print(f"⚠️ No data found for country: {country_code}")
                 return {
-                    'overview': {'message': f'No data available for {filter_desc}'},
+                    'overview': {'message': f'No data available for country {country_code}'},
                     'top_campaigns': [],
                     'creative_performance': {'top_performers': []},
                     'exchange_performance': [],

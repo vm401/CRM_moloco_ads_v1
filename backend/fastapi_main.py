@@ -244,10 +244,10 @@ async def upload_csv(
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
 @app.get("/reports")
-async def get_reports(date_filter: str = None, start_date: str = None, end_date: str = None):
+async def get_reports(date_filter: str = None, start_date: str = None, end_date: str = None, country: str = None):
     """Get list of all processed reports with aggregated data, optionally filtered by date or date range"""
     # Get aggregated data from all reports
-    aggregated_data = aggregate_all_reports_data(date_filter, start_date, end_date)
+    aggregated_data = aggregate_all_reports_data(date_filter, start_date, end_date, country)
     
     # Optimize response size by limiting reports metadata
     limited_reports = processed_reports[-10:] if len(processed_reports) > 10 else processed_reports
@@ -271,6 +271,37 @@ async def get_available_dates():
     return {
         'dates': sorted(list(all_dates)),
         'count': len(all_dates)
+    }
+
+@app.get("/available-countries")
+async def get_available_countries():
+    """Get all available countries from uploaded reports"""
+    all_countries = set()
+    
+    # Get countries from the latest report
+    if processed_reports:
+        latest_reports = processed_reports[-1]
+        
+        # Try to get countries from CSV
+        if 'reports' in latest_reports:
+            try:
+                csv_file = latest_reports['reports']['report_path'].replace('_processed.json', '.csv')
+                if os.path.exists(csv_file):
+                    from moloco_processor import MolocoCSVProcessor
+                    processor = MolocoCSVProcessor()
+                    processor.load_and_detect_type(csv_file)
+                    
+                    # Get unique countries from CSV
+                    if processor.df is not None and 'Countries' in processor.df.columns:
+                        countries = processor.df['Countries'].dropna().unique().tolist()
+                        all_countries.update(countries)
+                        print(f"🌍 Found countries: {list(all_countries)[:10]}")
+            except Exception as e:
+                print(f"❌ Error getting countries: {e}")
+    
+    return {
+        "countries": sorted(list(all_countries)),
+        "count": len(all_countries)
     }
 
 @app.delete("/clear-reports")
@@ -349,7 +380,7 @@ async def get_report_data(report_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading report data: {str(e)}")
 
-def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, end_date: str = None):
+def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, end_date: str = None, country: str = None):
     """Aggregate data from all loaded reports and create daily breakdown
     
     Args:
@@ -382,12 +413,12 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
         }
     
     # Create hash of processed reports for cache validation including filters
-    cache_key = f"{len(processed_reports)}_{date_filter}_{start_date}_{end_date}"
+    cache_key = f"{len(processed_reports)}_{date_filter}_{start_date}_{end_date}_{country}"
     reports_hash = hashlib.md5(cache_key.encode()).hexdigest()
     current_time = datetime.now()
     
-    # Skip cache if date filtering is applied (always re-process filtered data)
-    use_cache = not (date_filter or start_date or end_date)
+    # Skip cache if filtering is applied (always re-process filtered data)
+    use_cache = not (date_filter or start_date or end_date or country)
     
     # Check if we have valid cached data (less than 5 minutes old) and no filters
     if (use_cache and aggregated_data_cache['data'] is not None and 
@@ -430,9 +461,9 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
     # Load reports data and apply date filtering
     if 'reports' in latest_reports:
         try:
-            # Re-process the CSV with date filtering if needed
-            if date_filter or start_date or end_date:
-                print(f"🔄 Re-processing reports CSV with date filter: {date_filter}, {start_date}, {end_date}")
+            # Re-process the CSV with filtering if needed
+            if date_filter or start_date or end_date or country:
+                print(f"🔄 Re-processing reports CSV with filters: date={date_filter}, start={start_date}, end={end_date}, country={country}")
                 print(f"🔍 Latest reports keys: {list(latest_reports.keys())}")
                 print(f"🔍 Reports keys: {list(latest_reports['reports'].keys()) if 'reports' in latest_reports else 'No reports'}")
                 # Find the original CSV file
@@ -444,7 +475,7 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
                     processor = MolocoCSVProcessor()
                     processor.load_and_detect_type(csv_file)
                     print(f"🔍 CSV loaded, processing with filters...")
-                    filtered_data = processor.process_reports_csv(date_filter, start_date, end_date)
+                    filtered_data = processor.process_reports_csv(date_filter, start_date, end_date, country)
                     print(f"🔍 Filtered data keys: {list(filtered_data.keys()) if isinstance(filtered_data, dict) else 'Not a dict'}")
                     
                     aggregated_data['overview'] = filtered_data.get('overview', {})
