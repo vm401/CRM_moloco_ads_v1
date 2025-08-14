@@ -156,12 +156,12 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
   return (
     <div className={`relative ${className}`}>
       <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-600 whitespace-nowrap">📅 Период:</span>
+        <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Период:</span>
         
         <Button
           variant="outline"
           onClick={() => setShowCalendar(!showCalendar)}
-          className="min-w-[200px] justify-start text-left font-normal"
+          className="min-w-[200px] justify-start text-left font-normal border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200 transition-colors"
         >
           {formatDateRange()}
         </Button>
@@ -180,7 +180,7 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
       </div>
 
       {showCalendar && (
-        <Card ref={calendarRef} className="absolute top-full left-0 mt-2 z-50 shadow-lg">
+        <Card ref={calendarRef} className="absolute top-full left-0 mt-2 z-50 shadow-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <CardContent className="p-4">
             <div className="flex gap-6">
               {/* Left side - Quick presets and actions */}

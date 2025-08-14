@@ -86,7 +86,7 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
       <Button
         variant="outline"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 min-w-[200px] justify-between"
+        className="flex items-center gap-2 min-w-[200px] justify-between border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200 transition-colors"
       >
         <div className="flex items-center gap-2">
           <Globe className="h-4 w-4" />
@@ -109,20 +109,20 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
       </Button>
 
       {isOpen && (
-        <Card className="absolute top-full left-0 mt-2 z-50 shadow-lg min-w-[300px]">
+        <Card className="absolute top-full left-0 mt-2 z-50 shadow-lg min-w-[300px] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <CardContent className="p-4">
             <div className="space-y-3">
               <Input
                 placeholder="Search country or code..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full"
+                className="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                 autoFocus
               />
               <Button
                 variant="ghost"
                 onClick={handleClear}
-                className="w-full justify-start"
+                className="w-full justify-start hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200"
               >
                 <Globe className="h-4 w-4 mr-2" />
                 All Countries
@@ -134,9 +134,9 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
                       key={countryCode}
                       variant="ghost"
                       onClick={() => handleCountrySelect(countryCode)}
-                      className="w-full justify-start hover:bg-gray-100"
+                      className="w-full justify-start hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200"
                     >
-                      <span className="font-mono text-sm mr-3 text-blue-600">
+                      <span className="font-mono text-sm mr-3 text-blue-600 dark:text-blue-400">
                         {countryCode}
                       </span>
                       <span className="text-left">

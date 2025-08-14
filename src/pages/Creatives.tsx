@@ -428,18 +428,18 @@ export default function Creatives() {
               <div className="flex gap-2 flex-shrink-0">
                 <Button 
                   onClick={applyFilters}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+                  className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 transition-colors"
                   disabled={loading}
                 >
-                  {loading ? '⏳ Применяю...' : '✅ Применить'}
+                  {loading ? 'Применяю...' : 'Применить'}
                 </Button>
                 <Button 
                   onClick={resetFilters}
                   variant="outline"
-                  className="px-4 py-2"
+                  className="px-4 py-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   disabled={loading}
                 >
-                  🔄 Сбросить
+                  Сбросить
                 </Button>
               </div>
               
