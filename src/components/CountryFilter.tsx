@@ -7,11 +7,15 @@ import { ChevronDown, Globe, X } from 'lucide-react';
 interface CountryFilterProps {
   selectedCountry: string | null;
   onCountryChange: (country: string | null) => void;
+  dateRange?: {start: Date | null, end: Date | null};
+  disabled?: boolean;
 }
 
 const CountryFilter: React.FC<CountryFilterProps> = ({
   selectedCountry,
-  onCountryChange
+  onCountryChange,
+  dateRange,
+  disabled = false
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,36 +30,59 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
     'PL': 'Poland', 'CZ': 'Czech Republic', 'HU': 'Hungary', 'RO': 'Romania', 'BG': 'Bulgaria'
   };
 
-  // Fetch available countries from backend
+  // Fetch available countries from backend based on selected date range
   useEffect(() => {
     const fetchCountries = async () => {
+      // If no date range selected, don't load countries
+      if (!dateRange || (!dateRange.start && !dateRange.end)) {
+        setAvailableCountries([]);
+        return;
+      }
+
       try {
         const apiUrl = import.meta.env.PROD 
           ? 'https://moloco-crm-backend.onrender.com'
           : 'http://localhost:8000';
         
-        const response = await fetch(`${apiUrl}/available-countries`);
+        // Build URL with date parameters
+        let url = `${apiUrl}/available-countries`;
+        const params = new URLSearchParams();
+        
+        if (dateRange.start && dateRange.end) {
+          params.append('start_date', dateRange.start.toISOString().split('T')[0]);
+          params.append('end_date', dateRange.end.toISOString().split('T')[0]);
+        } else if (dateRange.start) {
+          params.append('date_filter', dateRange.start.toISOString().split('T')[0]);
+        }
+        
+        if (params.toString()) {
+          url += `?${params.toString()}`;
+        }
+        
+        console.log(`🌍 Fetching countries for dates: ${url}`);
+        const response = await fetch(url);
+        
         if (response.ok) {
           const data = await response.json();
           if (data.countries && data.countries.length > 0) {
             setAvailableCountries(data.countries);
+            console.log(`🌍 Loaded ${data.countries.length} countries for selected dates`);
           } else {
-            console.warn('No countries data from backend, using fallback');
-            // Fallback to common countries if backend has no data
-            setAvailableCountries(['US', 'CA', 'GB', 'FR', 'DE', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'HU', 'RO', 'BG', 'GR', 'TH']);
+            console.warn('No countries found for selected dates');
+            setAvailableCountries([]);
           }
         } else {
-          console.warn('Backend unavailable, using fallback countries');
-          setAvailableCountries(['US', 'CA', 'GB', 'FR', 'DE', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'HU', 'RO', 'BG', 'GR', 'TH']);
+          console.warn('Backend unavailable');
+          setAvailableCountries([]);
         }
       } catch (error) {
         console.error('Error fetching countries:', error);
-        // Fallback to common countries on error
-        setAvailableCountries(['US', 'CA', 'GB', 'FR', 'DE', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'HU', 'RO', 'BG', 'GR', 'TH']);
+        setAvailableCountries([]);
       }
     };
+    
     fetchCountries();
-  }, []);
+  }, [dateRange]); // Re-fetch when dateRange changes
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -91,20 +118,35 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
 
   const selectedCountryName = selectedCountry ? 
     (countryNames[selectedCountry] || selectedCountry) : null;
+  
+  // Determine if component should be disabled
+  const isDisabled = disabled || !dateRange || (!dateRange.start && !dateRange.end);
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <Button
-        variant="outline"
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 min-w-[200px] justify-between border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200 transition-colors"
-      >
-        <div className="flex items-center gap-2">
-          <Globe className="h-4 w-4" />
-          <span>
-            {selectedCountry ? `${selectedCountry} - ${selectedCountryName}` : 'All Countries'}
-          </span>
-        </div>
+              <Button
+          variant="outline"
+          onClick={() => !isDisabled && setIsOpen(!isOpen)}
+          disabled={isDisabled}
+          className={`flex items-center gap-2 min-w-[200px] justify-between border-gray-300 dark:border-gray-600 transition-colors ${
+            isDisabled 
+              ? 'opacity-50 cursor-not-allowed' 
+              : 'hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <Globe className="h-4 w-4" />
+            <span>
+              {isDisabled 
+                ? 'Choose date first' 
+                : selectedCountry 
+                  ? `${selectedCountry} - ${selectedCountryName}` 
+                  : availableCountries.length > 0 
+                    ? 'All Countries' 
+                    : 'No countries for selected dates'
+              }
+            </span>
+          </div>
         <div className="flex items-center gap-1">
           {selectedCountry && (
             <X
@@ -119,7 +161,7 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
         </div>
       </Button>
 
-      {isOpen && (
+      {isOpen && !isDisabled && (
         <Card className="absolute top-full left-0 mt-2 z-50 shadow-lg min-w-[300px] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <CardContent className="p-4">
             <div className="space-y-3">
