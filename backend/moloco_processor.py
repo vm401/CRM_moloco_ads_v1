@@ -145,7 +145,14 @@ class MolocoCSVProcessor:
         
         # Apply date filtering if specified
         original_rows = len(self.df)
+        print(f"🔍 DEBUG: DataFrame columns: {list(self.df.columns)}")
+        print(f"🔍 DEBUG: DataFrame shape: {self.df.shape}")
         if 'Date' in self.df.columns:
+            print(f"🔍 DEBUG: Date column found!")
+            print(f"🔍 DEBUG: First 5 dates: {self.df['Date'].head().tolist()}")
+            print(f"🔍 DEBUG: Date column dtype: {self.df['Date'].dtype}")
+            print(f"🔍 DEBUG: Unique dates count: {self.df['Date'].nunique()}")
+            print(f"🔍 DEBUG: Date range: {self.df['Date'].min()} to {self.df['Date'].max()}")
             if date_filter:
                 # Single date filter
                 self.df = self.df[self.df['Date'] == date_filter]
@@ -174,6 +181,12 @@ class MolocoCSVProcessor:
                     'gambling_insights': {},
                     'daily_breakdown': []
                 }
+        else:
+            print(f"⚠️ DEBUG: 'Date' column not found! Available columns: {list(self.df.columns)}")
+            # Try to find date column with different names
+            date_cols = [col for col in self.df.columns if 'date' in col.lower()]
+            if date_cols:
+                print(f"🔍 DEBUG: Found potential date columns: {date_cols}")
             
         # Basic aggregations
         total_spend = float(self.df['Spend'].sum()) if 'Spend' in self.df.columns else 0
