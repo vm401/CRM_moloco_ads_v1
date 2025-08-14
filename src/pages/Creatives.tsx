@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import RowFilter from "@/components/RowFilter";
-import { DateFilter } from "@/components/DateFilter";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
 
 // Полный интерфейс для Creative из CSV
 interface Creative {
@@ -70,7 +70,10 @@ export default function Creatives() {
   const [sortBy, setSortBy] = useState<string>('Spend');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [showVideoMetrics, setShowVideoMetrics] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<{start: Date | null, end: Date | null}>({
+    start: null,
+    end: null
+  });
   
   // Drag & Drop состояния
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
@@ -79,16 +82,25 @@ export default function Creatives() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (selectedDate) {
-        console.log(`📅 Filtering data by date: ${selectedDate}`);
+      if (dateRange.start || dateRange.end) {
+        console.log(`📅 Filtering data by date range:`, dateRange);
       }
       try {
         console.log('🔄 Fetching creative data from CSV processor...');
         
         // Получаем данные напрямую из /reports (новый API) с принудительным обновлением
         let url = `${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now();
-        if (selectedDate) {
-          url += `&date_filter=${encodeURIComponent(selectedDate)}`;
+        
+        // Add date range parameters
+        if (dateRange.start && dateRange.end) {
+          const startStr = dateRange.start.toISOString().split('T')[0];
+          const endStr = dateRange.end.toISOString().split('T')[0];
+          url += `&start_date=${encodeURIComponent(startStr)}&end_date=${encodeURIComponent(endStr)}`;
+          console.log(`📅 Filtering by date range: ${startStr} to ${endStr}`);
+        } else if (dateRange.start) {
+          const startStr = dateRange.start.toISOString().split('T')[0];
+          url += `&start_date=${encodeURIComponent(startStr)}`;
+          console.log(`📅 Filtering from date: ${startStr}`);
         }
         
         const reportsResponse = await fetch(url, {
@@ -120,7 +132,7 @@ export default function Creatives() {
     };
 
     fetchData();
-  }, [selectedDate]); // Перезагружаем данные при смене даты
+  }, [dateRange]); // Перезагружаем данные при смене диапазона дат
 
   // Функции форматирования
   const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
@@ -270,8 +282,8 @@ export default function Creatives() {
           <CardContent className="pt-6">
             <div className="flex items-center gap-4 mb-4">
               {/* Фильтр по дате */}
-              <DateFilter 
-                onDateChange={setSelectedDate}
+              <DateRangeFilter 
+                onDateRangeChange={(start, end) => setDateRange({start, end})}
                 className="flex-shrink-0"
               />
               

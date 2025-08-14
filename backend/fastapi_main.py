@@ -244,10 +244,10 @@ async def upload_csv(
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
 @app.get("/reports")
-async def get_reports(date_filter: str = None):
-    """Get list of all processed reports with aggregated data, optionally filtered by date"""
+async def get_reports(date_filter: str = None, start_date: str = None, end_date: str = None):
+    """Get list of all processed reports with aggregated data, optionally filtered by date or date range"""
     # Get aggregated data from all reports
-    aggregated_data = aggregate_all_reports_data(date_filter)
+    aggregated_data = aggregate_all_reports_data(date_filter, start_date, end_date)
     
     # Optimize response size by limiting reports metadata
     limited_reports = processed_reports[-10:] if len(processed_reports) > 10 else processed_reports
@@ -349,16 +349,25 @@ async def get_report_data(report_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading report data: {str(e)}")
 
-def aggregate_all_reports_data(date_filter: str = None):
+def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, end_date: str = None):
     """Aggregate data from all loaded reports and create daily breakdown
     
     Args:
-        date_filter: Optional date string to filter data (e.g., '2024-01-15')
+        date_filter: Optional single date string to filter data (e.g., '2024-01-15')
+        start_date: Optional start date for range filtering (e.g., '2024-01-15') 
+        end_date: Optional end date for range filtering (e.g., '2024-01-20')
     """
     global aggregated_data_cache
     start_time = datetime.now()
     
-    print(f"🔍 Aggregating data with date filter: {date_filter}" if date_filter else "🔍 Aggregating all data")
+    if date_filter:
+        print(f"🔍 Aggregating data with single date filter: {date_filter}")
+    elif start_date and end_date:
+        print(f"🔍 Aggregating data with date range: {start_date} to {end_date}")
+    elif start_date:
+        print(f"🔍 Aggregating data from date: {start_date}")
+    else:
+        print("🔍 Aggregating all data")
     
     if not processed_reports:
         return {

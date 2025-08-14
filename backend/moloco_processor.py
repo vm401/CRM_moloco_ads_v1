@@ -132,10 +132,48 @@ class MolocoCSVProcessor:
                 'error': str(e)
             }
     
-    def process_reports_csv(self) -> Dict[str, Any]:
-        """Process Reports CSV type"""
+    def process_reports_csv(self, date_filter: str = None, start_date: str = None, end_date: str = None) -> Dict[str, Any]:
+        """Process Reports CSV type with optional date filtering
+        
+        Args:
+            date_filter: Single date to filter (e.g., '2024-01-15')
+            start_date: Start date for range filtering
+            end_date: End date for range filtering
+        """
         if self.df is None:
             return {'error': 'No data loaded'}
+        
+        # Apply date filtering if specified
+        original_rows = len(self.df)
+        if 'Date' in self.df.columns:
+            if date_filter:
+                # Single date filter
+                self.df = self.df[self.df['Date'] == date_filter]
+                print(f"📅 Single date filter '{date_filter}': {original_rows} → {len(self.df)} rows")
+            elif start_date and end_date:
+                # Date range filter
+                self.df = self.df[
+                    (self.df['Date'] >= start_date) & 
+                    (self.df['Date'] <= end_date)
+                ]
+                print(f"📅 Date range filter '{start_date}' to '{end_date}': {original_rows} → {len(self.df)} rows")
+            elif start_date:
+                # From date filter
+                self.df = self.df[self.df['Date'] >= start_date]
+                print(f"📅 From date filter '{start_date}': {original_rows} → {len(self.df)} rows")
+            
+            if len(self.df) == 0:
+                filter_desc = date_filter or f"{start_date} to {end_date}" if end_date else f"from {start_date}"
+                print(f"⚠️ No data found for date filter: {filter_desc}")
+                return {
+                    'overview': {'message': f'No data available for {filter_desc}'},
+                    'top_campaigns': [],
+                    'creative_performance': {'top_performers': []},
+                    'exchange_performance': [],
+                    'geographic_performance': [],
+                    'gambling_insights': {},
+                    'daily_breakdown': []
+                }
             
         # Basic aggregations
         total_spend = float(self.df['Spend'].sum()) if 'Spend' in self.df.columns else 0
