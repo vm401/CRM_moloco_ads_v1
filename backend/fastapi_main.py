@@ -477,7 +477,7 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
                         
                         aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
                         aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
-                except Exception as e:
+        except Exception as e:
             print(f"❌ Error loading reports data: {e}")
     
     # Load inventory data
