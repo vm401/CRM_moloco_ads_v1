@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import RowFilter from "@/components/RowFilter";
+import { DateFilter } from "@/components/DateFilter";
 
 // Полный интерфейс для Creative из CSV
 interface Creative {
@@ -69,6 +70,7 @@ export default function Creatives() {
   const [sortBy, setSortBy] = useState<string>('Spend');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [showVideoMetrics, setShowVideoMetrics] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   
   // Drag & Drop состояния
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
@@ -77,11 +79,19 @@ export default function Creatives() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (selectedDate) {
+        console.log(`📅 Filtering data by date: ${selectedDate}`);
+      }
       try {
         console.log('🔄 Fetching creative data from CSV processor...');
         
         // Получаем данные напрямую из /reports (новый API) с принудительным обновлением
-                  const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
+        let url = `${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now();
+        if (selectedDate) {
+          url += `&date_filter=${encodeURIComponent(selectedDate)}`;
+        }
+        
+        const reportsResponse = await fetch(url, {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'
@@ -110,7 +120,7 @@ export default function Creatives() {
     };
 
     fetchData();
-  }, []);
+  }, [selectedDate]); // Перезагружаем данные при смене даты
 
   // Функции форматирования
   const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
@@ -259,6 +269,12 @@ export default function Creatives() {
         <Card className="lz-card">
           <CardContent className="pt-6">
             <div className="flex items-center gap-4 mb-4">
+              {/* Фильтр по дате */}
+              <DateFilter 
+                onDateChange={setSelectedDate}
+                className="flex-shrink-0"
+              />
+              
               <div className="flex-1 max-w-md">
                 <Input
                   placeholder="Search creatives..."

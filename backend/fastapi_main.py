@@ -170,6 +170,19 @@ async def upload_csv(
         async with aiofiles.open(report_path, 'w') as f:
             await f.write(json.dumps(processed_data, ensure_ascii=False, indent=2, default=str))
         
+        # Extract available dates from CSV
+        available_dates = []
+        if 'Date' in detection_result.get('columns', []):
+            try:
+                import pandas as pd
+                df = pd.read_csv(filepath)
+                if 'Date' in df.columns:
+                    unique_dates = df['Date'].dropna().unique()
+                    available_dates = sorted([str(date) for date in unique_dates])
+                    print(f"📅 Found {len(available_dates)} unique dates: {available_dates[:5]}...")
+            except Exception as e:
+                print(f"⚠️ Error extracting dates: {e}")
+        
         # Create report info
         report_info = {
             'id': len(processed_reports) + 1,
@@ -179,7 +192,8 @@ async def upload_csv(
             'report_path': report_path,
             'csv_type': processor.csv_type,
             'rows': detection_result.get('rows', 0),
-            'columns': detection_result.get('columns', [])
+            'columns': detection_result.get('columns', []),
+            'available_dates': available_dates  # Новое поле!
         }
         
         # Store report info
@@ -198,10 +212,10 @@ async def upload_csv(
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
 @app.get("/reports")
-async def get_reports():
-    """Get list of all processed reports with aggregated data"""
+async def get_reports(date_filter: str = None):
+    """Get list of all processed reports with aggregated data, optionally filtered by date"""
     # Get aggregated data from all reports
-    aggregated_data = aggregate_all_reports_data()
+    aggregated_data = aggregate_all_reports_data(date_filter)
     
     # Optimize response size by limiting reports metadata
     limited_reports = processed_reports[-10:] if len(processed_reports) > 10 else processed_reports
@@ -211,6 +225,20 @@ async def get_reports():
         'reports': limited_reports,  # Only last 10 reports for metadata
         'total': len(processed_reports),
         **aggregated_data  # Add all aggregated data to response
+    }
+
+@app.get("/available-dates")
+async def get_available_dates():
+    """Get all unique dates from all uploaded CSV files"""
+    all_dates = set()
+    
+    for report in processed_reports:
+        dates = report.get('available_dates', [])
+        all_dates.update(dates)
+    
+    return {
+        'dates': sorted(list(all_dates)),
+        'count': len(all_dates)
     }
 
 @app.delete("/clear-reports")
@@ -289,10 +317,16 @@ async def get_report_data(report_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading report data: {str(e)}")
 
-def aggregate_all_reports_data():
-    """Aggregate data from all loaded reports and create daily breakdown"""
+def aggregate_all_reports_data(date_filter: str = None):
+    """Aggregate data from all loaded reports and create daily breakdown
+    
+    Args:
+        date_filter: Optional date string to filter data (e.g., '2024-01-15')
+    """
     global aggregated_data_cache
     start_time = datetime.now()
+    
+    print(f"🔍 Aggregating data with date filter: {date_filter}" if date_filter else "🔍 Aggregating all data")
     
     if not processed_reports:
         return {
