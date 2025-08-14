@@ -432,14 +432,20 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
         try:
             # Re-process the CSV with date filtering if needed
             if date_filter or start_date or end_date:
-                print(f"🔄 Re-processing reports CSV with date filter")
+                print(f"🔄 Re-processing reports CSV with date filter: {date_filter}, {start_date}, {end_date}")
+                print(f"🔍 Latest reports keys: {list(latest_reports.keys())}")
+                print(f"🔍 Reports keys: {list(latest_reports['reports'].keys()) if 'reports' in latest_reports else 'No reports'}")
                 # Find the original CSV file
                 csv_file = latest_reports['reports']['report_path'].replace('_processed.json', '.csv')
+                print(f"🔍 CSV file path: {csv_file}")
+                print(f"🔍 CSV exists: {os.path.exists(csv_file)}")
                 if os.path.exists(csv_file):
                     from moloco_processor import MolocoCSVProcessor
                     processor = MolocoCSVProcessor()
                     processor.load_csv(csv_file)
+                    print(f"🔍 CSV loaded, processing with filters...")
                     filtered_data = processor.process_reports_csv(date_filter, start_date, end_date)
+                    print(f"🔍 Filtered data keys: {list(filtered_data.keys()) if isinstance(filtered_data, dict) else 'Not a dict'}")
                     
                     aggregated_data['overview'] = filtered_data.get('overview', {})
                     aggregated_data['top_campaigns'] = filtered_data.get('top_campaigns', [])[:50]
