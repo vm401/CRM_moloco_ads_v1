@@ -413,7 +413,6 @@ export default function Creatives() {
               <CountryFilter
                 selectedCountry={selectedCountry}
                 onCountryChange={setSelectedCountry}
-                dateRange={dateRange}
               />
               
               <div className="flex-1 max-w-md">
