@@ -442,7 +442,7 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
                 if os.path.exists(csv_file):
                     from moloco_processor import MolocoCSVProcessor
                     processor = MolocoCSVProcessor()
-                    processor.load_csv(csv_file)
+                    processor.load_and_detect_type(csv_file)
                     print(f"🔍 CSV loaded, processing with filters...")
                     filtered_data = processor.process_reports_csv(date_filter, start_date, end_date)
                     print(f"🔍 Filtered data keys: {list(filtered_data.keys()) if isinstance(filtered_data, dict) else 'Not a dict'}")
