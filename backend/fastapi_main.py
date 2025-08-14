@@ -51,6 +51,35 @@ aggregated_data_cache = {
     'timestamp': None
 }
 
+# Persistent storage
+REPORTS_FILE = "processed_reports.json"
+
+def save_reports_to_file():
+    """Save processed reports to file for persistence"""
+    try:
+        with open(REPORTS_FILE, 'w') as f:
+            json.dump(processed_reports, f, default=str)
+        print(f"💾 Saved {len(processed_reports)} reports to file")
+    except Exception as e:
+        print(f"❌ Error saving reports: {e}")
+
+def load_reports_from_file():
+    """Load processed reports from file"""
+    global processed_reports
+    try:
+        if os.path.exists(REPORTS_FILE):
+            with open(REPORTS_FILE, 'r') as f:
+                processed_reports = json.load(f)
+            print(f"📂 Loaded {len(processed_reports)} reports from file")
+            return True
+        else:
+            print("📂 No saved reports file found")
+            return False
+    except Exception as e:
+        print(f"❌ Error loading reports: {e}")
+        processed_reports = []
+        return False
+
 # Thread pool for CPU-intensive operations
 executor = ThreadPoolExecutor(max_workers=2)
 
@@ -198,6 +227,9 @@ async def upload_csv(
         
         # Store report info
         processed_reports.append(report_info)
+        
+        # Save to persistent storage
+        save_reports_to_file()
         
         return {
             "success": True,
