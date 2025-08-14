@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import "./DateRangeFilter.css";
@@ -19,6 +19,7 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
   const [loading, setLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
+  const calendarRef = useRef<HTMLDivElement>(null);
 
   // Fetch available dates from backend
   useEffect(() => {
@@ -53,6 +54,18 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
     };
 
     fetchDates();
+  }, []);
+
+  // Handle click outside to close calendar
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+        setShowCalendar(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Handle date range change
@@ -167,7 +180,7 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
       </div>
 
       {showCalendar && (
-        <Card className="absolute top-full left-0 mt-2 z-50 shadow-lg">
+        <Card ref={calendarRef} className="absolute top-full left-0 mt-2 z-50 shadow-lg">
           <CardContent className="p-4">
             <div className="flex gap-6">
               {/* Left side - Quick presets and actions */}

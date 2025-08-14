@@ -77,6 +77,13 @@ export default function Creatives() {
   });
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   
+  // Применённые фильтры (для API вызовов)
+  const [appliedDateRange, setAppliedDateRange] = useState<{start: Date | null, end: Date | null}>({
+    start: null,
+    end: null
+  });
+  const [appliedCountry, setAppliedCountry] = useState<string | null>(null);
+  
   // Drag & Drop состояния
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
   const [columnOrder, setColumnOrder] = useState<string[]>([...MAIN_COLUMNS]);
@@ -93,22 +100,22 @@ export default function Creatives() {
         // Получаем данные напрямую из /reports (новый API) с принудительным обновлением
         let url = `${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now();
         
-        // Add date range parameters
-        if (dateRange.start && dateRange.end) {
-          const startStr = dateRange.start.toISOString().split('T')[0];
-          const endStr = dateRange.end.toISOString().split('T')[0];
+        // Add date range parameters (используем применённые фильтры)
+        if (appliedDateRange.start && appliedDateRange.end) {
+          const startStr = appliedDateRange.start.toISOString().split('T')[0];
+          const endStr = appliedDateRange.end.toISOString().split('T')[0];
           url += `&start_date=${encodeURIComponent(startStr)}&end_date=${encodeURIComponent(endStr)}`;
           console.log(`📅 Filtering by date range: ${startStr} to ${endStr}`);
-        } else if (dateRange.start) {
-          const startStr = dateRange.start.toISOString().split('T')[0];
+        } else if (appliedDateRange.start) {
+          const startStr = appliedDateRange.start.toISOString().split('T')[0];
           url += `&start_date=${encodeURIComponent(startStr)}`;
           console.log(`📅 Filtering from date: ${startStr}`);
         }
         
-        // Add country parameter
-        if (selectedCountry) {
-          url += `&country=${encodeURIComponent(selectedCountry)}`;
-          console.log(`🌍 Filtering by country: ${selectedCountry}`);
+        // Add country parameter (используем применённые фильтры)
+        if (appliedCountry) {
+          url += `&country=${encodeURIComponent(appliedCountry)}`;
+          console.log(`🌍 Filtering by country: ${appliedCountry}`);
         }
         
         const reportsResponse = await fetch(url, {
@@ -140,7 +147,114 @@ export default function Creatives() {
     };
 
     fetchData();
-  }, [dateRange, selectedCountry]); // Перезагружаем данные при смене фильтров
+  }, []); // Загружаем данные только один раз при монтировании
+
+  // Функции для работы с фильтрами
+  const applyFilters = async () => {
+    setLoading(true);
+    setAppliedDateRange(dateRange);
+    setAppliedCountry(selectedCountry);
+    
+    // Перезагружаем данные с новыми фильтрами
+    try {
+      console.log('🔄 Applying filters and fetching data...');
+      
+      let url = `${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now();
+      
+      // Add date range parameters
+      if (dateRange.start && dateRange.end) {
+        const startStr = dateRange.start.toISOString().split('T')[0];
+        const endStr = dateRange.end.toISOString().split('T')[0];
+        url += `&start_date=${encodeURIComponent(startStr)}&end_date=${encodeURIComponent(endStr)}`;
+        console.log(`📅 Applying date range filter: ${startStr} to ${endStr}`);
+      } else if (dateRange.start) {
+        const startStr = dateRange.start.toISOString().split('T')[0];
+        url += `&start_date=${encodeURIComponent(startStr)}`;
+        console.log(`📅 Applying date filter: ${startStr}`);
+      }
+      
+      // Add country parameter
+      if (selectedCountry) {
+        url += `&country=${encodeURIComponent(selectedCountry)}`;
+        console.log(`🌍 Applying country filter: ${selectedCountry}`);
+      }
+      
+      const reportsResponse = await fetch(url, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
+
+      if (!reportsResponse.ok) {
+        throw new Error(`HTTP error! status: ${reportsResponse.status}`);
+      }
+
+      const reportsData = await reportsResponse.json();
+      
+      if (reportsData.creative_performance && reportsData.creative_performance.top_performers) {
+        setData({
+          creatives: reportsData.creative_performance.top_performers,
+          total_creatives: reportsData.creative_performance.top_performers.length
+        });
+      } else {
+        setData({ creatives: [], total_creatives: 0 });
+      }
+      
+      console.log(`✅ Filters applied! Found ${reportsData.creative_performance?.top_performers?.length || 0} creatives`);
+    } catch (error) {
+      console.error('❌ Error applying filters:', error);
+      setData({ creatives: [], total_creatives: 0 });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetFilters = () => {
+    setDateRange({ start: null, end: null });
+    setSelectedCountry(null);
+    setAppliedDateRange({ start: null, end: null });
+    setAppliedCountry(null);
+    
+    // Перезагружаем данные без фильтров
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        console.log('🔄 Resetting filters and fetching all data...');
+        
+        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
+          cache: 'no-cache',
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
+
+        if (!reportsResponse.ok) {
+          throw new Error(`HTTP error! status: ${reportsResponse.status}`);
+        }
+
+        const reportsData = await reportsResponse.json();
+        
+        if (reportsData.creative_performance && reportsData.creative_performance.top_performers) {
+          setData({
+            creatives: reportsData.creative_performance.top_performers,
+            total_creatives: reportsData.creative_performance.top_performers.length
+          });
+        } else {
+          setData({ creatives: [], total_creatives: 0 });
+        }
+        
+        console.log(`✅ Filters reset! Showing all ${reportsData.creative_performance?.top_performers?.length || 0} creatives`);
+      } catch (error) {
+        console.error('❌ Error resetting filters:', error);
+        setData({ creatives: [], total_creatives: 0 });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  };
 
   // Функции форматирования
   const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
@@ -308,6 +422,25 @@ export default function Creatives() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="lz-input"
                 />
+              </div>
+              
+              {/* Кнопки управления фильтрами */}
+              <div className="flex gap-2 flex-shrink-0">
+                <Button 
+                  onClick={applyFilters}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+                  disabled={loading}
+                >
+                  {loading ? '⏳ Применяю...' : '✅ Применить'}
+                </Button>
+                <Button 
+                  onClick={resetFilters}
+                  variant="outline"
+                  className="px-4 py-2"
+                  disabled={loading}
+                >
+                  🔄 Сбросить
+                </Button>
               </div>
               
               {/* Переключатель видео метрик */}
