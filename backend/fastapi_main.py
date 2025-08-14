@@ -381,12 +381,16 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
             'inventory_app_analysis': {'apps': [], 'categories': [], 'total_apps': 0}
         }
     
-    # Create hash of processed reports for cache validation
-    reports_hash = hashlib.md5(str(len(processed_reports)).encode()).hexdigest()
+    # Create hash of processed reports for cache validation including filters
+    cache_key = f"{len(processed_reports)}_{date_filter}_{start_date}_{end_date}"
+    reports_hash = hashlib.md5(cache_key.encode()).hexdigest()
     current_time = datetime.now()
     
-    # Check if we have valid cached data (less than 5 minutes old)
-    if (aggregated_data_cache['data'] is not None and 
+    # Skip cache if date filtering is applied (always re-process filtered data)
+    use_cache = not (date_filter or start_date or end_date)
+    
+    # Check if we have valid cached data (less than 5 minutes old) and no filters
+    if (use_cache and aggregated_data_cache['data'] is not None and 
         aggregated_data_cache['hash'] == reports_hash and
         aggregated_data_cache['timestamp'] and
         (current_time - aggregated_data_cache['timestamp']).seconds < 300):
@@ -423,40 +427,40 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
         'inventory_app_analysis': {'apps': [], 'categories': [], 'total_apps': 0}
     }
     
-                        # Load reports data and apply date filtering
-        if 'reports' in latest_reports:
-            try:
-                # Re-process the CSV with date filtering if needed
-                if date_filter or start_date or end_date:
-                    print(f"🔄 Re-processing reports CSV with date filter")
-                    # Find the original CSV file
-                    csv_file = latest_reports['reports']['report_path'].replace('_report.json', '.csv')
-                    if os.path.exists(csv_file):
-                        from moloco_processor import MolocoCSVProcessor
-                        processor = MolocoCSVProcessor()
-                        processor.load_csv(csv_file)
-                        filtered_data = processor.process_reports_csv(date_filter, start_date, end_date)
-                        
-                        aggregated_data['overview'] = filtered_data.get('overview', {})
-                        aggregated_data['top_campaigns'] = filtered_data.get('top_campaigns', [])[:50]
-                        aggregated_data['creative_performance'] = filtered_data.get('creative_performance', {'top_performers': []})
-                        aggregated_data['exchange_performance'] = filtered_data.get('exchange_performance', [])[:20]
-                        aggregated_data['geographic_performance'] = filtered_data.get('geographic_performance', [])
-                        aggregated_data['gambling_insights'] = filtered_data.get('gambling_insights', {})
-                    else:
-                        print(f"⚠️ Original CSV not found: {csv_file}")
-                        # Fallback to cached data
-                        with open(latest_reports['reports']['report_path'], 'r') as f:
-                            reports_data = json.load(f)
-                            aggregated_data['overview'] = reports_data.get('overview', {})
-                            aggregated_data['top_campaigns'] = reports_data.get('top_campaigns', [])[:50]
-                            aggregated_data['creative_performance'] = reports_data.get('creative_performance', {'top_performers': []})
-                            aggregated_data['exchange_performance'] = reports_data.get('exchange_performance', [])[:20]
-                            aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
-                            aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
+    # Load reports data and apply date filtering
+    if 'reports' in latest_reports:
+        try:
+            # Re-process the CSV with date filtering if needed
+            if date_filter or start_date or end_date:
+                print(f"🔄 Re-processing reports CSV with date filter")
+                # Find the original CSV file
+                csv_file = latest_reports['reports']['report_path'].replace('_processed.json', '.csv')
+                if os.path.exists(csv_file):
+                    from moloco_processor import MolocoCSVProcessor
+                    processor = MolocoCSVProcessor()
+                    processor.load_csv(csv_file)
+                    filtered_data = processor.process_reports_csv(date_filter, start_date, end_date)
+                    
+                    aggregated_data['overview'] = filtered_data.get('overview', {})
+                    aggregated_data['top_campaigns'] = filtered_data.get('top_campaigns', [])[:50]
+                    aggregated_data['creative_performance'] = filtered_data.get('creative_performance', {'top_performers': []})
+                    aggregated_data['exchange_performance'] = filtered_data.get('exchange_performance', [])[:20]
+                    aggregated_data['geographic_performance'] = filtered_data.get('geographic_performance', [])
+                    aggregated_data['gambling_insights'] = filtered_data.get('gambling_insights', {})
                 else:
-                    # Use cached data without filtering
+                    print(f"⚠️ Original CSV not found: {csv_file}")
+                    # Fallback to cached data
                     with open(latest_reports['reports']['report_path'], 'r') as f:
+                    reports_data = json.load(f)
+                    aggregated_data['overview'] = reports_data.get('overview', {})
+                    aggregated_data['top_campaigns'] = reports_data.get('top_campaigns', [])[:50]
+                    aggregated_data['creative_performance'] = reports_data.get('creative_performance', {'top_performers': []})
+                    aggregated_data['exchange_performance'] = reports_data.get('exchange_performance', [])[:20]
+                    aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
+                    aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
+            else:
+                # Use cached data without filtering
+                with open(latest_reports['reports']['report_path'], 'r') as f:
                         reports_data = json.load(f)
                         aggregated_data['overview'] = reports_data.get('overview', {})
                         # PERFORMANCE: Limit campaigns to top 50 for faster loading
@@ -473,7 +477,7 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
                         
                         aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
                         aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
-        except Exception as e:
+                except Exception as e:
             print(f"❌ Error loading reports data: {e}")
     
     # Load inventory data
