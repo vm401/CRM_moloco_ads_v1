@@ -75,6 +75,7 @@ export default function Creatives() {
     start: null,
     end: null
   });
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   
   // Drag & Drop состояния
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
@@ -102,6 +103,12 @@ export default function Creatives() {
           const startStr = dateRange.start.toISOString().split('T')[0];
           url += `&start_date=${encodeURIComponent(startStr)}`;
           console.log(`📅 Filtering from date: ${startStr}`);
+        }
+        
+        // Add country parameter
+        if (selectedCountry) {
+          url += `&country=${encodeURIComponent(selectedCountry)}`;
+          console.log(`🌍 Filtering by country: ${selectedCountry}`);
         }
         
         const reportsResponse = await fetch(url, {
@@ -133,7 +140,7 @@ export default function Creatives() {
     };
 
     fetchData();
-  }, [dateRange]); // Перезагружаем данные при смене диапазона дат
+  }, [dateRange, selectedCountry]); // Перезагружаем данные при смене фильтров
 
   // Функции форматирования
   const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
@@ -286,6 +293,12 @@ export default function Creatives() {
               <DateRangeFilter 
                 onDateRangeChange={(start, end) => setDateRange({start, end})}
                 className="flex-shrink-0"
+              />
+              
+              {/* Фильтр по стране */}
+              <CountryFilter
+                selectedCountry={selectedCountry}
+                onCountryChange={setSelectedCountry}
               />
               
               <div className="flex-1 max-w-md">
