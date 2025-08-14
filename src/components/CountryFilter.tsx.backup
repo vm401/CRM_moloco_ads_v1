@@ -175,7 +175,7 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
           <CardContent className="p-4">
             <div className="space-y-3">
               <Input
-                placeholder="Введите код или название страны (мин. 2 символа)..."
+                placeholder="Search country or code..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
@@ -189,7 +189,7 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
                 <Globe className="h-4 w-4 mr-2" />
                 All Countries
               </Button>
-              {searchTerm.length >= 2 ? (<div className="max-h-60 overflow-y-auto space-y-1">
+              <div className="max-h-60 overflow-y-auto space-y-1">
                 {filteredCountries.length > 0 ? (
                   filteredCountries.map((countryCode) => (
                     <Button
