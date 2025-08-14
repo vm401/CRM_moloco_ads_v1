@@ -182,52 +182,21 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
       {showCalendar && (
         <Card ref={calendarRef} className="absolute top-full left-0 mt-2 z-50 shadow-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <CardContent className="p-4">
-            <div className="flex gap-6">
-              {/* Left side - Quick presets and actions */}
-              <div className="flex flex-col gap-4 min-w-[160px]">
-                <div className="text-sm font-medium text-gray-700">Быстрый выбор</div>
-                <div className="flex flex-col gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setQuickRange(1)} className="justify-start">
-                    Сегодня
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => setQuickRange(7)} className="justify-start">
-                    7 дней
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => setQuickRange(14)} className="justify-start">
-                    14 дней
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => setQuickRange(30)} className="justify-start">
-                    30 дней
-                  </Button>
-                </div>
-                
-                {/* Actions */}
-                <div className="flex flex-col gap-2 mt-4">
-                  <Button variant="outline" onClick={clearFilter} size="sm">
-                    Очистить
-                  </Button>
-                  <Button onClick={() => setShowCalendar(false)} size="sm">
-                    Применить
-                  </Button>
-                </div>
-              </div>
-
-              {/* Right side - Calendar */}
-              <div>
-                <DatePicker
-                  selected={startDate}
-                  onChange={handleDateChange}
-                  startDate={startDate}
-                  endDate={endDate}
-                  selectsRange
-                  inline
-                  monthsShown={2}
-                  filterDate={filterDate}
-                  dayClassName={getDayClassName}
-                  calendarClassName="!border-0"
-                  showPopperArrow={false}
-                />
-              </div>
+            {/* Single simplified calendar */}
+            <div>
+              <DatePicker
+                selected={startDate}
+                onChange={handleDateChange}
+                startDate={startDate}
+                endDate={endDate}
+                selectsRange
+                inline
+                monthsShown={1}
+                filterDate={filterDate}
+                dayClassName={getDayClassName}
+                calendarClassName="!border-0"
+                showPopperArrow={false}
+              />
             </div>
           </CardContent>
         </Card>

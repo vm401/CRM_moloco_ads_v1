@@ -37,10 +37,21 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
         const response = await fetch(`${apiUrl}/available-countries`);
         if (response.ok) {
           const data = await response.json();
-          setAvailableCountries(data.countries || []);
+          if (data.countries && data.countries.length > 0) {
+            setAvailableCountries(data.countries);
+          } else {
+            console.warn('No countries data from backend, using fallback');
+            // Fallback to common countries if backend has no data
+            setAvailableCountries(['US', 'CA', 'GB', 'FR', 'DE', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'HU', 'RO', 'BG', 'GR', 'TH']);
+          }
+        } else {
+          console.warn('Backend unavailable, using fallback countries');
+          setAvailableCountries(['US', 'CA', 'GB', 'FR', 'DE', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'HU', 'RO', 'BG', 'GR', 'TH']);
         }
       } catch (error) {
         console.error('Error fetching countries:', error);
+        // Fallback to common countries on error
+        setAvailableCountries(['US', 'CA', 'GB', 'FR', 'DE', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'HU', 'RO', 'BG', 'GR', 'TH']);
       }
     };
     fetchCountries();
