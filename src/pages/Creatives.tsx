@@ -383,14 +383,22 @@ export default function Creatives() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Stats */}
-      <div className="text-sm text-gray-600 dark:text-gray-400">
-        CSV Processed Creatives: <span className="font-semibold text-purple-600">{data.total_creatives}</span> total
-        {filteredAndSortedCreatives.length !== data.creatives.length && (
-          <span> • Showing: <span className="font-semibold text-green-500">{filteredAndSortedCreatives.length}</span></span>
-        )}
-      </div>
+    <div className="relative min-h-screen">
+      <GeometricBackground />
+      <div className="relative z-10 space-y-6">
+        
+        {/* Заголовок */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-mono font-bold tracking-tight">🎨 CREATIVE PERFORMANCE</h1>
+            <p className="text-muted-foreground mt-1">
+              CSV Processed Creatives: <span className="font-semibold text-primary">{data.total_creatives}</span> total
+              {filteredAndSortedCreatives.length !== data.creatives.length && (
+                <span> • Showing: <span className="font-semibold text-green-400">{filteredAndSortedCreatives.length}</span></span>
+              )}
+            </p>
+          </div>
+        </div>
 
         {/* Фильтры */}
         <Card className="lz-card">
