@@ -1,0 +1,257 @@
+/* RevenueCat-inspired styles */
+
+/* Rounded tables and cards */
+.revenue-table {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgb(229 231 235);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.dark .revenue-table {
+  border-color: rgb(55 65 81);
+  background-color: rgb(17 24 39);
+}
+
+.revenue-card {
+  border-radius: 1.5rem;
+  border: 1px solid rgb(229 231 235);
+  background-color: white;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.dark .revenue-card {
+  border-color: rgb(55 65 81);
+  background-color: rgb(17 24 39);
+}
+
+/* Table headers with better styling */
+.revenue-table-header {
+  background-color: rgb(249 250 251);
+  border-bottom: 1px solid rgb(229 231 235);
+}
+
+.dark .revenue-table-header {
+  background-color: rgb(31 41 55);
+  border-bottom-color: rgb(55 65 81);
+}
+
+/* Table rows with hover effects */
+.revenue-table-row {
+  border-bottom: 1px solid rgb(243 244 246);
+  transition: background-color 0.15s ease;
+}
+
+.revenue-table-row:hover {
+  background-color: rgb(249 250 251);
+}
+
+.dark .revenue-table-row {
+  border-bottom-color: rgb(55 65 81);
+}
+
+.dark .revenue-table-row:hover {
+  background-color: rgb(31 41 55);
+}
+
+/* Cells with better padding and typography */
+.revenue-table-cell {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.revenue-table-header-cell {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: rgb(55 65 81);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.dark .revenue-table-header-cell {
+  color: rgb(209 213 219);
+}
+
+/* Sidebar styling */
+.revenue-sidebar {
+  background: linear-gradient(to bottom, rgb(249 250 251), rgb(243 244 246));
+  border-right: 1px solid rgb(229 231 235);
+}
+
+.dark .revenue-sidebar {
+  background: linear-gradient(to bottom, rgb(17 24 39), rgb(31 41 55));
+  border-right-color: rgb(55 65 81);
+}
+
+/* Navigation items */
+.revenue-nav-item {
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.revenue-nav-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.revenue-nav-item.active {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Badges and status indicators */
+.revenue-badge-good {
+  background-color: rgb(220 252 231);
+  color: rgb(22 101 52);
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dark .revenue-badge-good {
+  background-color: rgb(6 78 59);
+  color: rgb(167 243 208);
+}
+
+.revenue-badge-average {
+  background-color: rgb(254 249 195);
+  color: rgb(133 77 14);
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dark .revenue-badge-average {
+  background-color: rgb(120 53 15);
+  color: rgb(253 230 138);
+}
+
+.revenue-badge-poor {
+  background-color: rgb(254 226 226);
+  color: rgb(153 27 27);
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dark .revenue-badge-poor {
+  background-color: rgb(127 29 29);
+  color: rgb(252 165 165);
+}
+
+/* Metric cards */
+.revenue-metric-card {
+  background: linear-gradient(135deg, rgb(255 255 255) 0%, rgb(249 250 251) 100%);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgb(229 231 235);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.dark .revenue-metric-card {
+  background: linear-gradient(135deg, rgb(17 24 39) 0%, rgb(31 41 55) 100%);
+  border-color: rgb(55 65 81);
+}
+
+/* Buttons with RevenueCat styling */
+.revenue-button {
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.revenue-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.revenue-button-primary {
+  background: linear-gradient(135deg, rgb(59 130 246) 0%, rgb(37 99 235) 100%);
+  color: white;
+  border: none;
+}
+
+.revenue-button-primary:hover {
+  background: linear-gradient(135deg, rgb(37 99 235) 0%, rgb(29 78 216) 100%);
+}
+
+/* Input fields */
+.revenue-input {
+  border-radius: 0.75rem;
+  border: 1px solid rgb(209 213 219);
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.revenue-input:focus {
+  border-color: rgb(59 130 246);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+  outline: none;
+}
+
+.dark .revenue-input {
+  background-color: rgb(31 41 55);
+  border-color: rgb(55 65 81);
+  color: rgb(243 244 246);
+}
+
+.dark .revenue-input:focus {
+  border-color: rgb(59 130 246);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+}
+
+/* Loading states */
+.revenue-loading {
+  background: linear-gradient(90deg, rgb(243 244 246) 25%, rgb(229 231 235) 50%, rgb(243 244 246) 75%);
+  background-size: 200% 100%;
+  animation: revenue-shimmer 2s infinite;
+}
+
+.dark .revenue-loading {
+  background: linear-gradient(90deg, rgb(55 65 81) 25%, rgb(75 85 99) 50%, rgb(55 65 81) 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes revenue-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Scrollbars */
+.revenue-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.revenue-scrollbar::-webkit-scrollbar-track {
+  background: rgb(243 244 246);
+  border-radius: 3px;
+}
+
+.revenue-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(156 163 175);
+  border-radius: 3px;
+}
+
+.revenue-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(107 114 128);
+}
+
+.dark .revenue-scrollbar::-webkit-scrollbar-track {
+  background: rgb(55 65 81);
+}
+
+.dark .revenue-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(75 85 99);
+}
+
+.dark .revenue-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(107 114 128);
+}

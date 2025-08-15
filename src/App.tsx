@@ -7,6 +7,8 @@ import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./layouts/AppLayout";
+import Layout from "./components/Layout";
+import "./styles/revenue-cat.css";
 
 // Lazy loading для лучшей производительности
 const SinglePageApp = lazy(() => import("./pages/SinglePageApp"));
@@ -17,6 +19,7 @@ const Creatives = lazy(() => import("./pages/Creatives"));
 const Exchanges = lazy(() => import("./pages/Exchanges"));
 const Inventory = lazy(() => import("./pages/Inventory"));
 const Upload = lazy(() => import("./pages/Upload"));
+const Apps = lazy(() => import("./pages/Apps"));
 
 // Loading компонент
 const LoadingSpinner = () => (
@@ -50,7 +53,8 @@ const App = () => (
           <Route path="/dashboard" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></AppLayout>} />
           <Route path="/inventory" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Inventory /></Suspense></AppLayout>} />
           <Route path="/campaigns" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Campaigns /></Suspense></AppLayout>} />
-          <Route path="/creatives" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Creatives /></Suspense></AppLayout>} />
+          <Route path="/creatives" element={<Layout><Suspense fallback={<LoadingSpinner />}><Creatives /></Suspense></Layout>} />
+          <Route path="/apps" element={<Layout><Suspense fallback={<LoadingSpinner />}><Apps /></Suspense></Layout>} />
           <Route path="/exchanges" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Exchanges /></Suspense></AppLayout>} />
           <Route path="/upload" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Upload /></Suspense></AppLayout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
