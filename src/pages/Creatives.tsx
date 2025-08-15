@@ -415,25 +415,29 @@ export default function Creatives() {
         {/* Фильтры */}
         <Card className="revenue-card">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-4 flex-wrap">
               {/* Фильтр по дате */}
-              <DateRangeFilter 
-                onDateRangeChange={(start, end) => setDateRange({start, end})}
-                className="flex-shrink-0"
-              />
+              <div className="flex-shrink-0">
+                <DateRangeFilter 
+                  onDateRangeChange={(start, end) => setDateRange({start, end})}
+                  className="w-auto"
+                />
+              </div>
               
               {/* Фильтр по стране */}
-              <CountryFilter
-                selectedCountry={selectedCountry}
-                onCountryChange={setSelectedCountry}
-              />
+              <div className="flex-shrink-0">
+                <CountryFilter
+                  selectedCountry={selectedCountry}
+                  onCountryChange={setSelectedCountry}
+                />
+              </div>
               
-              <div className="flex-1 max-w-md">
+              <div className="flex-1 min-w-0 max-w-md">
                 <Input
                   placeholder="Search creatives..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="lz-input"
+                  className="lz-input w-full"
                 />
               </div>
               

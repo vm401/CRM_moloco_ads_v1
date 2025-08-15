@@ -667,12 +667,21 @@ async def get_creatives(
     page: int = 1,
     per_page: int = 30,
     sort_by: str = 'spend',
-    sort_order: str = 'desc'
+    sort_order: str = 'desc',
+    start_date: str = None,
+    end_date: str = None,
+    country: str = None
 ):
-    """Get paginated creative performance data"""
+    """Get paginated creative performance data with filtering"""
     try:
-        # Get all aggregated data
-        all_data = aggregate_all_reports_data()
+        # Apply filters if provided
+        if start_date or end_date or country:
+            # Use filtered data
+            filtered_data = await get_filtered_reports(start_date, end_date, country)
+            all_data = aggregate_reports_data(filtered_data)
+        else:
+            # Get all aggregated data
+            all_data = aggregate_all_reports_data()
         
         # Get creative performance data
         creatives = all_data.get('creative_performance', {}).get('top_performers', [])
