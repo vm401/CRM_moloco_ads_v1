@@ -189,8 +189,9 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
                 <Globe className="h-4 w-4 mr-2" />
                 All Countries
               </Button>
-              {searchTerm.length >= 2 ? (<div className="max-h-60 overflow-y-auto space-y-1">
-                {filteredCountries.length > 0 ? (
+              {searchTerm.length >= 2 ? (
+                <div className="max-h-60 overflow-y-auto space-y-1">
+                  {filteredCountries.length > 0 ? (
                   filteredCountries.map((countryCode) => (
                     <Button
                       key={countryCode}
@@ -206,16 +207,17 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
                       </span>
                     </Button>
                   ))
-                ) : availableCountries.length === 0 ? (
-                  <div className="text-sm text-gray-500 text-center py-4">
-                    No countries available. Upload CSV data first.
-                  </div>
-                ) : (
-                  <div className="text-sm text-gray-500 text-center py-4">
-                    No countries match your search.
-                  </div>
-                )}
-              </div>
+                  ) : (
+                    <div className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                      Страны не найдены
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                  💡 Введите минимум 2 символа для поиска
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
