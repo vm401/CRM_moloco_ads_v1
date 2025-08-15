@@ -320,11 +320,25 @@ body, p, span, div, td, th, input, textarea, select {
 }
 
 /* Кнопки внутри sortable заголовков тоже должны иметь grab курсор */
-.sortable button, .sortable Button {
+.sortable button, .sortable Button, 
+.revenue-table-header-cell.sortable button,
+.revenue-table-header-cell.sortable Button {
   cursor: grab !important;
 }
 
-.sortable:hover button, .sortable:hover Button {
+.sortable:hover button, .sortable:hover Button,
+.revenue-table-header-cell.sortable:hover button,
+.revenue-table-header-cell.sortable:hover Button {
+  color: #ffffff !important;
+}
+
+/* Дополнительные стили для уверенности */
+th.revenue-table-header-cell.sortable {
+  cursor: grab !important;
+}
+
+th.revenue-table-header-cell.sortable:hover {
+  background-color: var(--rc-accent-blue) !important;
   color: #ffffff !important;
 }
 
