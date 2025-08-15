@@ -298,6 +298,50 @@ body, p, span, div, td, th, input, textarea, select {
   border-right: 3px solid var(--rc-accent-green);
 }
 
+/* DRAG & DROP СТИЛИ ДЛЯ ТАБЛИЦ */
+.table th.sortable, .revenue-table th.sortable, table th.sortable {
+  cursor: grab;
+  user-select: none;
+  position: relative;
+}
+
+.table th.sortable:hover, .revenue-table th.sortable:hover, table th.sortable:hover {
+  background: var(--rc-accent-blue);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.table th.sortable:active, .revenue-table th.sortable:active, table th.sortable:active {
+  cursor: grabbing;
+  transform: scale(1.02);
+}
+
+/* Индикатор сортировки */
+.table th.sortable::after, .revenue-table th.sortable::after, table th.sortable::after {
+  content: '⇅';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.table th.sortable:hover::after, .revenue-table th.sortable:hover::after, table th.sortable:hover::after {
+  opacity: 1;
+}
+
+/* Drag preview */
+.table-drag-preview {
+  background: var(--rc-bg-card);
+  border: 2px solid var(--rc-accent-blue);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: var(--rc-shadow-lg);
+  opacity: 0.9;
+  transform: rotate(2deg);
+}
+
 /* Links - точные стили */
 a, .link {
   font-family: 'Inter', sans-serif;
