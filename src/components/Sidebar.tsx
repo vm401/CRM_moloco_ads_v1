@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -28,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   onToggle 
 }) => {
   const location = useLocation();
+  const { user, logout } = useAuth();
   
   const menuItems = [
     {
