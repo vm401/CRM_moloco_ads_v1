@@ -118,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     <div 
       className={`
         fixed left-0 top-0 h-full border-r transition-all duration-300 z-50 flex flex-col
-        ${isCollapsed ? 'w-16' : 'w-64'}
+        ${isCollapsed ? 'w-20' : 'w-80'}
       `}
       style={{ 
         backgroundColor: 'var(--rc-bg-secondary)', 

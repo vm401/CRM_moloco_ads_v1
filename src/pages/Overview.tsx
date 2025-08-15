@@ -10,6 +10,9 @@ import {
   Zap,
   BarChart3
 } from "lucide-react";
+import { motion } from 'framer-motion';
+import AnimatedCard from '@/components/AnimatedCard';
+import AnimatedCounter from '@/components/AnimatedCounter';
 
 interface MetricCardProps {
   title: string;

@@ -29,7 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       
       <div className={`
         transition-all duration-300
-        ${sidebarCollapsed ? 'ml-16' : 'ml-64'}
+        ${sidebarCollapsed ? 'ml-20' : 'ml-80'}
       `}>
         <Header title={title} />
         
