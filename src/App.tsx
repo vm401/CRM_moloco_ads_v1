@@ -20,6 +20,11 @@ const Exchanges = lazy(() => import("./pages/Exchanges"));
 const Inventory = lazy(() => import("./pages/Inventory"));
 const Upload = lazy(() => import("./pages/Upload"));
 const Apps = lazy(() => import("./pages/Apps"));
+const CreativeDatabase = lazy(() => import("./pages/CreativeDatabase"));
+const ExchangesWithFilters = lazy(() => import("./pages/ExchangesWithFilters"));
+const InventoryWithFilters = lazy(() => import("./pages/InventoryWithFilters"));
+const CampaignsWithFilters = lazy(() => import("./pages/CampaignsWithFilters"));
+const UploadWithMulti = lazy(() => import("./pages/UploadWithMulti"));
 
 // Loading компонент
 const LoadingSpinner = () => (
@@ -51,12 +56,14 @@ const App = () => (
           <Route path="/testapi" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><TestApi /></Suspense></AppLayout>} />
           {/* Старые роуты - классический режим */}
           <Route path="/dashboard" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></AppLayout>} />
-          <Route path="/inventory" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Inventory /></Suspense></AppLayout>} />
-          <Route path="/campaigns" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Campaigns /></Suspense></AppLayout>} />
+          {/* Новые страницы с Layout и фильтрами */}
+          <Route path="/inventory" element={<Layout><Suspense fallback={<LoadingSpinner />}><InventoryWithFilters /></Suspense></Layout>} />
+          <Route path="/campaigns" element={<Layout><Suspense fallback={<LoadingSpinner />}><CampaignsWithFilters /></Suspense></Layout>} />
           <Route path="/creatives" element={<Layout><Suspense fallback={<LoadingSpinner />}><Creatives /></Suspense></Layout>} />
           <Route path="/apps" element={<Layout><Suspense fallback={<LoadingSpinner />}><Apps /></Suspense></Layout>} />
-          <Route path="/exchanges" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Exchanges /></Suspense></AppLayout>} />
-          <Route path="/upload" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Upload /></Suspense></AppLayout>} />
+          <Route path="/exchanges" element={<Layout><Suspense fallback={<LoadingSpinner />}><ExchangesWithFilters /></Suspense></Layout>} />
+          <Route path="/upload" element={<Layout><Suspense fallback={<LoadingSpinner />}><UploadWithMulti /></Suspense></Layout>} />
+          <Route path="/creative-database" element={<Layout><Suspense fallback={<LoadingSpinner />}><CreativeDatabase /></Suspense></Layout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

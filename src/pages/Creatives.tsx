@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import RowFilter from "@/components/RowFilter";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
 import CountryFilter from "@/components/CountryFilter";
+import CampaignTicker from "@/components/CampaignTicker";
 
 // Полный интерфейс для Creative из CSV
 interface Creative {
