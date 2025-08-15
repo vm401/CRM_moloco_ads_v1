@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import AppLayout from "./layouts/AppLayout";
 import Layout from "./components/Layout";
 import "./styles/revenue-cat.css";
+import "./styles/animations.css";
 
 // Lazy loading для лучшей производительности
 const SinglePageApp = lazy(() => import("./pages/SinglePageApp"));
@@ -51,20 +52,28 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/app" element={<Suspense fallback={<LoadingSpinner />}><SinglePageApp /></Suspense>} />
-          <Route path="/testapi" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><TestApi /></Suspense></AppLayout>} />
-          {/* Старые роуты - классический режим */}
-          <Route path="/dashboard" element={<AppLayout><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></AppLayout>} />
-          {/* Новые страницы с Layout и фильтрами */}
-          <Route path="/inventory" element={<Layout><Suspense fallback={<LoadingSpinner />}><InventoryWithFilters /></Suspense></Layout>} />
-          <Route path="/campaigns" element={<Layout><Suspense fallback={<LoadingSpinner />}><CampaignsWithFilters /></Suspense></Layout>} />
-          <Route path="/creatives" element={<Layout><Suspense fallback={<LoadingSpinner />}><Creatives /></Suspense></Layout>} />
-          <Route path="/apps" element={<Layout><Suspense fallback={<LoadingSpinner />}><Apps /></Suspense></Layout>} />
-          <Route path="/exchanges" element={<Layout><Suspense fallback={<LoadingSpinner />}><ExchangesWithFilters /></Suspense></Layout>} />
-          <Route path="/upload" element={<Layout><Suspense fallback={<LoadingSpinner />}><UploadWithMulti /></Suspense></Layout>} />
-          <Route path="/creative-database" element={<Layout><Suspense fallback={<LoadingSpinner />}><CreativeDatabase /></Suspense></Layout>} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          {/* Главная страница - редирект на Overview */}
+          <Route path="/" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></Layout>} />
+          
+          {/* Основные страницы CRM */}
+          <Route path="/overview" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></Layout>} />
+          <Route path="/campaigns" element={<Layout title="Campaigns"><Suspense fallback={<LoadingSpinner />}><CampaignsWithFilters /></Suspense></Layout>} />
+          <Route path="/creatives" element={<Layout title="Creatives"><Suspense fallback={<LoadingSpinner />}><Creatives /></Suspense></Layout>} />
+          <Route path="/apps" element={<Layout title="Apps"><Suspense fallback={<LoadingSpinner />}><Apps /></Suspense></Layout>} />
+          <Route path="/exchanges" element={<Layout title="Exchanges"><Suspense fallback={<LoadingSpinner />}><ExchangesWithFilters /></Suspense></Layout>} />
+          <Route path="/inventory" element={<Layout title="Inventory"><Suspense fallback={<LoadingSpinner />}><InventoryWithFilters /></Suspense></Layout>} />
+          <Route path="/creative-database" element={<Layout title="Creative Database"><Suspense fallback={<LoadingSpinner />}><CreativeDatabase /></Suspense></Layout>} />
+          
+          {/* Служебные страницы */}
+          <Route path="/upload" element={<Layout title="Upload Reports"><Suspense fallback={<LoadingSpinner />}><UploadWithMulti /></Suspense></Layout>} />
+          <Route path="/settings" element={<Layout title="Settings"><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></Layout>} />
+          
+          {/* Устаревшие роуты - редирект */}
+          <Route path="/app" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></Layout>} />
+          <Route path="/dashboard" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></Layout>} />
+          <Route path="/testapi" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></Layout>} />
+          
+          {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

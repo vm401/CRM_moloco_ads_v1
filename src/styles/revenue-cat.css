@@ -1,23 +1,77 @@
-/* RevenueCat-inspired styles */
+/* RevenueCat 1:1 Copy Styles */
+
+/* Colors matching RevenueCat exactly */
+:root {
+  /* Light theme - RevenueCat colors */
+  --rc-bg-primary: #fafbfc;
+  --rc-bg-secondary: #ffffff;
+  --rc-bg-tertiary: #f8f9fa;
+  --rc-border: #e9ecef;
+  --rc-border-light: #f1f3f4;
+  --rc-text-primary: #1a1a1a;
+  --rc-text-secondary: #6c757d;
+  --rc-text-tertiary: #9ca3af;
+  --rc-accent-blue: #007bff;
+  --rc-accent-blue-hover: #0056b3;
+  --rc-accent-green: #28a745;
+  --rc-accent-red: #dc3545;
+  --rc-accent-purple: #6f42c1;
+  --rc-accent-orange: #fd7e14;
+  --rc-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --rc-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --rc-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.dark {
+  /* Dark theme - RevenueCat colors */
+  --rc-bg-primary: #0d1117;
+  --rc-bg-secondary: #161b22;
+  --rc-bg-tertiary: #21262d;
+  --rc-border: #30363d;
+  --rc-border-light: #21262d;
+  --rc-text-primary: #f0f6fc;
+  --rc-text-secondary: #8b949e;
+  --rc-text-tertiary: #6e7681;
+  --rc-accent-blue: #58a6ff;
+  --rc-accent-blue-hover: #388bfd;
+  --rc-accent-green: #3fb950;
+  --rc-accent-red: #f85149;
+  --rc-accent-purple: #a5a5ff;
+  --rc-accent-orange: #ff8c42;
+  --rc-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --rc-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+  --rc-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+}
+
+/* Global background */
+body {
+  background-color: var(--rc-bg-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--rc-text-primary);
+}
 
 /* Rounded tables and cards */
 .revenue-table {
-  border-radius: 1rem;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgb(229 231 235);
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-}
-
-.dark .revenue-table {
-  border-color: rgb(55 65 81);
-  background-color: rgb(17 24 39);
+  border: 1px solid var(--rc-border);
+  box-shadow: var(--rc-shadow-sm);
+  background-color: var(--rc-bg-secondary);
 }
 
 .revenue-card {
-  border-radius: 1.5rem;
-  border: 1px solid rgb(229 231 235);
-  background-color: white;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  border-radius: 12px;
+  border: 1px solid var(--rc-border);
+  background-color: var(--rc-bg-secondary);
+  box-shadow: var(--rc-shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.revenue-card:hover {
+  box-shadow: var(--rc-shadow-md);
+  transform: translateY(-1px);
 }
 
 .dark .revenue-card {

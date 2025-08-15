@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       id: 'overview',
       label: 'Overview',
       icon: Home,
-      path: '/',
+      path: '/overview',
       color: 'text-blue-500',
       bgColor: 'bg-blue-50 dark:bg-blue-900/20'
     },
@@ -115,11 +115,16 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className={`
-      fixed left-0 top-0 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 
-      transition-all duration-300 z-50 flex flex-col
-      ${isCollapsed ? 'w-16' : 'w-64'}
-    `}>
+    <div 
+      className={`
+        fixed left-0 top-0 h-full border-r transition-all duration-300 z-50 flex flex-col
+        ${isCollapsed ? 'w-16' : 'w-64'}
+      `}
+      style={{ 
+        backgroundColor: 'var(--rc-bg-secondary)', 
+        borderColor: 'var(--rc-border)' 
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
         {!isCollapsed && (
