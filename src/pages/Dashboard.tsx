@@ -93,7 +93,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-                  const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
+                  const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports?` + Date.now(), {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'

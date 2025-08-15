@@ -71,7 +71,7 @@ const CountryFilter: React.FC<CountryFilterProps> = ({
     const fetchCountries = async () => {
       try {
         const apiUrl = import.meta.env.PROD 
-          ? 'https://moloco-crm-backend.onrender.com'
+          ? 'https://r3cstat.vercel.app/api'
           : 'http://localhost:8000';
         
         console.log(`🌍 Fetching all available countries from: ${apiUrl}/available-countries`);

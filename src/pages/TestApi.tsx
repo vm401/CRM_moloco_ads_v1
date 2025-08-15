@@ -11,7 +11,7 @@ export default function TestApi() {
         console.log('🔄 Testing API connection...');
         
         // Тест 1: Получаем список отчетов
-        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports`);
+        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports`);
         const reports = await reportsResponse.json();
         console.log('📊 Reports:', reports);
         
@@ -20,7 +20,7 @@ export default function TestApi() {
           console.log(`🎯 Latest report ID: ${latestReportId}`);
           
           // Тест 2: Получаем данные последнего отчета
-          const dataResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports/${latestReportId}/data`);
+          const dataResponse = await fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports/${latestReportId}/data`);
           const reportData = await dataResponse.json();
           console.log('📈 Report data:', reportData);
           

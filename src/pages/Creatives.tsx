@@ -88,7 +88,9 @@ export default function Creatives() {
   // Drag & Drop состояния
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
   const [columnOrder, setColumnOrder] = useState<string[]>([...MAIN_COLUMNS]);
-  const [rowLimit, setRowLimit] = useState<number>(25);
+  const [rowLimit, setRowLimit] = useState<number>(30);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,71 +98,84 @@ export default function Creatives() {
         console.log(`📅 Filtering data by date range:`, dateRange);
       }
       try {
-        console.log('🔄 Fetching creative data from CSV processor...');
+        console.log('🔄 Fetching creative data with pagination...');
         
-        // Получаем данные напрямую из /reports (новый API) с принудительным обновлением
-        let url = `${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now();
+        // Используем новый пагинированный API endpoint
+        let url = `${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/creatives`;
+        
+        // Add pagination parameters
+        const params = new URLSearchParams({
+          page: currentPage.toString(),
+          per_page: rowLimit.toString(),
+          sort_by: sortBy.toLowerCase(),
+          sort_order: sortOrder
+        });
         
         // Add date range parameters (используем применённые фильтры)
         if (appliedDateRange.start && appliedDateRange.end) {
           const startStr = appliedDateRange.start.toISOString().split('T')[0];
           const endStr = appliedDateRange.end.toISOString().split('T')[0];
-          url += `&start_date=${encodeURIComponent(startStr)}&end_date=${encodeURIComponent(endStr)}`;
+          params.append('start_date', startStr);
+          params.append('end_date', endStr);
           console.log(`📅 Filtering by date range: ${startStr} to ${endStr}`);
         } else if (appliedDateRange.start) {
           const startStr = appliedDateRange.start.toISOString().split('T')[0];
-          url += `&start_date=${encodeURIComponent(startStr)}`;
+          params.append('start_date', startStr);
           console.log(`📅 Filtering from date: ${startStr}`);
         }
         
         // Add country parameter (используем применённые фильтры)
         if (appliedCountry) {
-          url += `&country=${encodeURIComponent(appliedCountry)}`;
+          params.append('country', appliedCountry);
           console.log(`🌍 Filtering by country: ${appliedCountry}`);
         }
         
-        const reportsResponse = await fetch(url, {
+        const response = await fetch(`${url}?${params}`, {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'
           }
         });
-        const reports = await reportsResponse.json();
+        const result = await response.json();
         
-        if (reports.success && reports.creative_performance?.top_performers) {
-          const creativeData = reports.creative_performance.top_performers;
-          console.log(`✅ Loaded ${creativeData?.length || 0} creatives from CSV processor`);
+        if (result.success && result.creatives) {
+          console.log(`✅ Loaded ${result.creatives.length} creatives (page ${currentPage} of ${result.pagination.total_pages})`);
           
           setData({
-            creatives: creativeData || [],
-            total_creatives: creativeData?.length || 0
+            creatives: result.creatives || [],
+            total_creatives: result.pagination.total || 0
           });
+          setTotalPages(result.pagination.total_pages || 1);
         } else {
           console.log('⚠️ No creative data found - CSV not processed yet');
           setData({ creatives: [], total_creatives: 0 });
+          setTotalPages(1);
         }
       } catch (error) {
-        console.error('💥 Error fetching processed CSV creative data:', error);
+        console.error('💥 Error fetching paginated creative data:', error);
         setData({ creatives: [], total_creatives: 0 });
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []); // Загружаем данные только один раз при монтировании
+  }, [currentPage, rowLimit, sortBy, sortOrder, appliedDateRange, appliedCountry]); // Зависимость от пагинации и фильтров
 
   // Функции для работы с фильтрами
   const applyFilters = async () => {
     setLoading(true);
     setAppliedDateRange(dateRange);
     setAppliedCountry(selectedCountry);
+    // Сбрасываем на первую страницу при применении фильтров
+    setCurrentPage(1);
     
     // Перезагружаем данные с новыми фильтрами
     try {
       console.log('🔄 Applying filters and fetching data...');
       
-      let url = `${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now();
+      let url = `${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports?` + Date.now();
       
       // Add date range parameters
       if (dateRange.start && dateRange.end) {
@@ -223,7 +238,7 @@ export default function Creatives() {
       try {
         console.log('🔄 Resetting filters and fetching all data...');
         
-        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
+        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports?` + Date.now(), {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'
@@ -347,6 +362,8 @@ export default function Creatives() {
       setSortBy(column);
       setSortOrder('desc');
     }
+    // Сбрасываем на первую страницу при изменении сортировки
+    setCurrentPage(1);
   };
 
   const filteredAndSortedCreatives = [...data.creatives]
@@ -568,6 +585,64 @@ export default function Creatives() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Пагинация */}
+        {totalPages > 1 && (
+          <Card className="revenue-card">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-muted-foreground">
+                    Page {currentPage} of {totalPages} ({data.total_creatives} total creatives)
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </Button>
+                  
+                  {/* Page numbers */}
+                  <div className="flex items-center space-x-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      const pageNum = currentPage <= 3 
+                        ? i + 1 
+                        : currentPage >= totalPages - 2 
+                        ? totalPages - 4 + i 
+                        : currentPage - 2 + i;
+                      
+                      if (pageNum < 1 || pageNum > totalPages) return null;
+                      
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(pageNum)}
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Статистика */}
         {data.creatives.length > 0 && (

@@ -76,7 +76,7 @@ const Overview: React.FC = () => {
     setLoading(true);
     try {
       const apiUrl = import.meta.env.PROD 
-        ? 'https://moloco-crm-backend.onrender.com'
+        ? 'https://r3cstat.vercel.app/api'
         : 'http://localhost:8000';
       
       const response = await fetch(`${apiUrl}/reports`);

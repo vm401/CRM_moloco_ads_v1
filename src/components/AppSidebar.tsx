@@ -42,7 +42,7 @@ export function AppSidebar() {
       console.log('🔄 Starting to clear reports...');
       toast.loading("Очищаю отчеты...");
       
-      const response = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/clear-reports`, {
+      const response = await fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/clear-reports`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
