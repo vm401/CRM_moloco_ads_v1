@@ -35,26 +35,26 @@
 }
 
 .dark {
-  /* Dark theme - точные цвета из скриншотов */
-  --rc-bg-primary: #1a1b23;         /* Основной фон */
-  --rc-bg-secondary: #2a2d3a;       /* Фон карточек */
-  --rc-bg-tertiary: #353849;        /* Фон виджетов */
-  --rc-bg-card: #2a2d3a;            /* Фон карточек */
-  --rc-border: #3f4354;             /* Границы */
-  --rc-border-light: #2a2d3a;
+  /* КАЧЕСТВЕННАЯ ТЕМНАЯ ТЕМА - БЕЗ СЛИШКОМ ТЕМНЫХ УЧАСТКОВ */
+  --rc-bg-primary: #292929;         /* Основной фон - твой цвет */
+  --rc-bg-secondary: #121212;       /* Фон карточек - твой цвет */
+  --rc-bg-tertiary: #3a3a3a;        /* Фон виджетов - чуть светлее */
+  --rc-bg-card: #333333;            /* Фон карточек - контрастный но не черный */
+  --rc-border: #4E4E4E;             /* Границы - твой серый акцент */
+  --rc-border-light: #555555;       /* Светлые границы */
   --rc-text-primary: #ffffff;       /* Белый текст */
-  --rc-text-secondary: #b4bcd0;     /* Серый текст */
-  --rc-text-tertiary: #8b93a7;      /* Светло-серый */
-  --rc-accent-blue: #7F94FF;        /* Синий акцент */
-  --rc-accent-blue-hover: #6B82FF;
-  --rc-accent-green: #2FF2A1;       /* Зеленый акцент */
-  --rc-accent-orange: #ff8a65;
-  --rc-accent-purple: #7c4dff;
-  --rc-accent-red: #f44336;
-  --rc-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --rc-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
-  --rc-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
-  --rc-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --rc-text-secondary: #cccccc;     /* Светло-серый текст */
+  --rc-text-tertiary: #999999;      /* Серый текст */
+  --rc-accent-blue: #7F94FF;        /* Синий акцент - твой цвет */
+  --rc-accent-blue-hover: #6B82FF;  /* Синий hover */
+  --rc-accent-green: #2FF2A1;       /* Зеленый акцент - твой цвет */
+  --rc-accent-orange: #E79462;      /* Оранжевый акцент - твой цвет */
+  --rc-accent-purple: #7F94FF;      /* Фиолетовый = синий */
+  --rc-accent-red: #ff6b6b;         /* Красный акцент */
+  --rc-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --rc-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5);
+  --rc-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.6);
+  --rc-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Typography - точно как в RevenueCat */
@@ -142,7 +142,7 @@ body, p, span, div, td, th, input, textarea, select {
   box-shadow: var(--rc-shadow-md);
 }
 
-/* Primary кнопка */
+/* Primary кнопка - синий акцент */
 .btn-primary, .button-primary {
   background: var(--rc-accent-blue);
   color: #ffffff;
@@ -153,6 +153,30 @@ body, p, span, div, td, th, input, textarea, select {
   background: var(--rc-accent-blue-hover);
   border-color: var(--rc-accent-blue-hover);
   color: #ffffff;
+}
+
+/* Дополнительные кнопки с акцентами */
+.btn-success, .button-success {
+  background: var(--rc-accent-green);
+  color: #ffffff;
+  border-color: var(--rc-accent-green);
+}
+
+.btn-warning, .button-warning {
+  background: var(--rc-accent-orange);
+  color: #ffffff;
+  border-color: var(--rc-accent-orange);
+}
+
+.btn-secondary, .button-secondary {
+  background: var(--rc-border);
+  color: var(--rc-text-primary);
+  border-color: var(--rc-border);
+}
+
+.btn-secondary:hover, .button-secondary:hover {
+  background: #555555;
+  border-color: #555555;
 }
 
 /* Карточки - точно как в RevenueCat */
@@ -263,10 +287,38 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 3px rgba(127, 148, 255, 0.1);
 }
 
-/* Sidebar стили */
+/* Sidebar с акцентами */
 .sidebar {
   background: var(--rc-bg-secondary);
   border-right: 1px solid var(--rc-border);
+}
+
+/* Активные элементы навигации */
+.sidebar [class*="active"], .sidebar .active {
+  background: var(--rc-bg-tertiary) !important;
+  border-left: 3px solid var(--rc-accent-blue) !important;
+  color: var(--rc-accent-blue) !important;
+}
+
+/* Hover эффекты для навигации */
+.sidebar a:hover, .sidebar button:hover {
+  background: var(--rc-bg-tertiary) !important;
+  border-left: 2px solid var(--rc-accent-green) !important;
+  color: var(--rc-text-primary) !important;
+}
+
+/* Иконки с акцентами */
+.sidebar svg, .sidebar .icon {
+  color: var(--rc-text-secondary);
+  transition: color 0.2s ease;
+}
+
+.sidebar .active svg, .sidebar .active .icon {
+  color: var(--rc-accent-blue) !important;
+}
+
+.sidebar a:hover svg, .sidebar button:hover svg {
+  color: var(--rc-accent-green) !important;
 }
 
 /* Global body - ПРИНУДИТЕЛЬНО */
@@ -294,13 +346,44 @@ main, [role="main"], .main-content {
   font-family: 'Inter', sans-serif !important;
 }
 
-/* Все карточки ПРИНУДИТЕЛЬНО */
+/* Все карточки с цветовыми акцентами */
 .card, .Card, [class*="card"], [class*="Card"], .revenue-card {
   background-color: var(--rc-bg-card) !important;
   border: 1px solid var(--rc-border) !important;
   border-radius: 12px !important;
   box-shadow: var(--rc-shadow-card) !important;
   font-family: 'Inter', sans-serif !important;
+  position: relative;
+}
+
+/* Цветовые акценты для разных типов карточек */
+.revenue-card:nth-child(1) {
+  border-left: 4px solid var(--rc-accent-green) !important;
+}
+
+.revenue-card:nth-child(2) {
+  border-left: 4px solid var(--rc-accent-blue) !important;
+}
+
+.revenue-card:nth-child(3) {
+  border-left: 4px solid var(--rc-accent-orange) !important;
+}
+
+.revenue-card:nth-child(4) {
+  border-left: 4px solid var(--rc-accent-red) !important;
+}
+
+/* Hover эффекты с акцентами */
+.revenue-card:nth-child(1):hover {
+  box-shadow: 0 4px 16px rgba(47, 242, 161, 0.2) !important;
+}
+
+.revenue-card:nth-child(2):hover {
+  box-shadow: 0 4px 16px rgba(127, 148, 255, 0.2) !important;
+}
+
+.revenue-card:nth-child(3):hover {
+  box-shadow: 0 4px 16px rgba(231, 148, 98, 0.2) !important;
 }
 
 /* Все заголовки ПРИНУДИТЕЛЬНО Work Sans */
