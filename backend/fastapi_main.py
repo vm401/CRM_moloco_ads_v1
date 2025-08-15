@@ -713,3 +713,4 @@ async def get_creatives(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)# Force Render redeploy
+# Force Render redeploy Fri Aug 15 21:24:20 EEST 2025
