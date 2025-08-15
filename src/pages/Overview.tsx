@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import RevenueCatMetricCard from "@/components/RevenueCatMetricCard";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -117,40 +118,40 @@ const Overview: React.FC = () => {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
+        <RevenueCatMetricCard
           title="Total Spend"
           value={`$${totalSpend.toLocaleString()}`}
-          change="+12.5%"
+          subtitle="In total"
+          trendValue="+12.5%"
           trend="up"
-          icon={<DollarSign className="w-5 h-5 text-orange-500" />}
-          colorClass="metric-orange"
+          icon={<DollarSign className="w-5 h-5" />}
         />
         
-        <MetricCard
+        <RevenueCatMetricCard
           title="Total Actions"
-          value={totalActions}
-          change="+8.2%"
+          value={totalActions.toLocaleString()}
+          subtitle="In total"
+          trendValue="+8.2%"
           trend="up"
-          icon={<Target className="w-5 h-5 text-green-500" />}
-          colorClass="metric-green"
+          icon={<Target className="w-5 h-5" />}
         />
         
-        <MetricCard
+        <RevenueCatMetricCard
           title="Impressions"
-          value={totalImpressions}
-          change="+15.3%"
+          value={totalImpressions.toLocaleString()}
+          subtitle="In total"
+          trendValue="+15.3%"
           trend="up"
-          icon={<Activity className="w-5 h-5 text-purple-500" />}
-          colorClass="metric-purple"
+          icon={<Activity className="w-5 h-5" />}
         />
         
-        <MetricCard
+        <RevenueCatMetricCard
           title="Installs"
-          value={totalInstalls}
-          change="+5.7%"
+          value={totalInstalls.toLocaleString()}
+          subtitle="In total"
+          trendValue="+5.7%"
           trend="up"
-          icon={<Users className="w-5 h-5 text-blue-500" />}
-          colorClass="metric-purple"
+          icon={<Users className="w-5 h-5" />}
         />
       </div>
 

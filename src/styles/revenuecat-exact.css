@@ -1,0 +1,285 @@
+/* RevenueCat 1:1 Exact Copy - На основе скриншотов и данных */
+
+/* Import точных шрифтов */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/work-sans/400.css';
+@import '@fontsource/work-sans/500.css';
+@import '@fontsource/work-sans/600.css';
+@import '@fontsource/work-sans/700.css';
+
+/* CSS Variables точно как в RevenueCat */
+:root {
+  /* Light theme - точные цвета из скриншотов */
+  --rc-bg-primary: #fafbfc;
+  --rc-bg-secondary: #ffffff;
+  --rc-bg-tertiary: #f8f9fa;
+  --rc-bg-card: #ffffff;
+  --rc-border: #e9ecef;
+  --rc-border-light: #f1f3f4;
+  --rc-text-primary: #1a1a1a;
+  --rc-text-secondary: #6c757d;
+  --rc-text-tertiary: #9ca3af;
+  --rc-accent-blue: #7F94FF;        /* Точный синий из кнопок */
+  --rc-accent-blue-hover: #6B82FF;
+  --rc-accent-green: #2FF2A1;       /* Точный зеленый из элементов */
+  --rc-accent-orange: #FF8A65;
+  --rc-accent-purple: #7C4DFF;
+  --rc-accent-red: #f44336;
+  --rc-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --rc-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --rc-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --rc-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  /* Dark theme - точные цвета из скриншотов */
+  --rc-bg-primary: #1a1b23;         /* Основной фон */
+  --rc-bg-secondary: #2a2d3a;       /* Фон карточек */
+  --rc-bg-tertiary: #353849;        /* Фон виджетов */
+  --rc-bg-card: #2a2d3a;            /* Фон карточек */
+  --rc-border: #3f4354;             /* Границы */
+  --rc-border-light: #2a2d3a;
+  --rc-text-primary: #ffffff;       /* Белый текст */
+  --rc-text-secondary: #b4bcd0;     /* Серый текст */
+  --rc-text-tertiary: #8b93a7;      /* Светло-серый */
+  --rc-accent-blue: #7F94FF;        /* Синий акцент */
+  --rc-accent-blue-hover: #6B82FF;
+  --rc-accent-green: #2FF2A1;       /* Зеленый акцент */
+  --rc-accent-orange: #ff8a65;
+  --rc-accent-purple: #7c4dff;
+  --rc-accent-red: #f44336;
+  --rc-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --rc-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --rc-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+  --rc-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Typography - точно как в RevenueCat */
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Заголовки используют Work Sans (аналог ObjectSans) */
+h1, h2, h3, h4, h5, h6,
+.heading-1, .heading-2, .heading-3, .heading-4 {
+  font-family: 'Work Sans', 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--rc-text-primary);
+  letter-spacing: normal;
+}
+
+/* Точные размеры шрифтов из данных */
+h1, .heading-1 {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+}
+
+h2, .heading-2 {
+  font-size: 24px;      /* Как в данных Heading 2 */
+  line-height: 32px;
+  font-weight: 700;
+}
+
+h3, .heading-3 {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+}
+
+h4, .heading-4 {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+/* Body текст - Inter */
+body, p, span, div, td, th, input, textarea, select {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;       /* Как в данных Span */
+  line-height: 24px;
+  font-weight: 400;
+  color: var(--rc-text-primary);
+  letter-spacing: normal;
+}
+
+/* Маленький текст */
+.text-sm, small {
+  font-size: 14px;       /* Как в данных Link */
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.text-xs {
+  font-size: 12px;       /* Как в данных Span маленький */
+  line-height: 20px;
+  font-weight: 700;      /* Жирный для контраста */
+}
+
+/* Кнопки - точно как в RevenueCat */
+.btn, button, .revenue-button {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;       /* Как в данных Button */
+  line-height: 24.5px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--rc-border);
+  background: var(--rc-bg-card);
+  color: var(--rc-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--rc-shadow-sm);
+}
+
+.btn:hover, button:hover, .revenue-button:hover {
+  background: var(--rc-bg-tertiary);
+  border-color: var(--rc-accent-blue);
+  transform: translateY(-1px);
+  box-shadow: var(--rc-shadow-md);
+}
+
+/* Primary кнопка */
+.btn-primary, .button-primary {
+  background: var(--rc-accent-blue);
+  color: #ffffff;
+  border-color: var(--rc-accent-blue);
+}
+
+.btn-primary:hover, .button-primary:hover {
+  background: var(--rc-accent-blue-hover);
+  border-color: var(--rc-accent-blue-hover);
+  color: #ffffff;
+}
+
+/* Карточки - точно как в RevenueCat */
+.card, .revenue-card, .revenue-widget-card, .revenue-metric-card {
+  background: var(--rc-bg-card);
+  border: 1px solid var(--rc-border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--rc-shadow-card);
+  transition: all 0.2s ease;
+}
+
+.card:hover, .revenue-card:hover {
+  box-shadow: var(--rc-shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Таблицы - сохраняем логику, улучшаем стили */
+.table, .revenue-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--rc-bg-card);
+  border: 1px solid var(--rc-border);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.table th, .revenue-table th {
+  background: var(--rc-bg-tertiary);
+  color: var(--rc-text-primary);
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 700;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--rc-border);
+}
+
+.table td, .revenue-table td {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rc-border-light);
+  color: var(--rc-text-primary);
+}
+
+/* Links - точные стили */
+a, .link {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  color: var(--rc-accent-blue);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+a:hover, .link:hover {
+  color: var(--rc-accent-blue-hover);
+  text-decoration: underline;
+}
+
+/* Контрастные цвета для высокого контраста */
+.high-contrast-text {
+  color: var(--rc-text-primary);
+  /* Контраст 18.73:1 как в данных */
+}
+
+.medium-contrast-text {
+  color: var(--rc-text-secondary);
+  /* Контраст 10.41:1 */
+}
+
+.low-contrast-text {
+  color: var(--rc-text-tertiary);
+  /* Контраст 6.76:1 */
+}
+
+/* Специальные элементы */
+.badge, .tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--rc-bg-tertiary);
+  color: var(--rc-text-primary);
+  border: 1px solid var(--rc-border);
+}
+
+/* Input fields */
+input, textarea, select {
+  background: var(--rc-bg-card);
+  border: 1px solid var(--rc-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--rc-text-primary);
+  transition: all 0.2s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--rc-accent-blue);
+  box-shadow: 0 0 0 3px rgba(127, 148, 255, 0.1);
+}
+
+/* Sidebar стили */
+.sidebar {
+  background: var(--rc-bg-secondary);
+  border-right: 1px solid var(--rc-border);
+}
+
+/* Global body */
+body {
+  background-color: var(--rc-bg-primary);
+  margin: 0;
+  padding: 0;
+}
+
+/* Убираем старые стили */
+.lz-card {
+  background: var(--rc-bg-card) !important;
+  border: 1px solid var(--rc-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--rc-shadow-card) !important;
+}
