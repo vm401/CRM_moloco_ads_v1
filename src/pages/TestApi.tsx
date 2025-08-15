@@ -67,7 +67,7 @@ export default function TestApi() {
     return (
       <div className="p-8">
         <h1 className="text-2xl font-bold mb-4 text-red-600">❌ API Test Failed</h1>
-        <div className="lz-card border-red-500/20 bg-red-500/5 text-red-600 px-4 py-3">
+        <div className="revenue-card border-red-500/20 bg-red-500/5 text-red-600 px-4 py-3">
           {error}
         </div>
       </div>
@@ -76,31 +76,31 @@ export default function TestApi() {
 
   return (
     <div className="p-8 space-y-6">
-      <h1 className="text-2xl font-bold text-foreground">✅ API Test Success!</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">✅ API Test Success!</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="lz-card p-4">
+        <div className="revenue-card p-4">
           <div className="text-2xl font-bold text-foreground">{data?.totalReports || 0}</div>
           <div className="text-sm text-muted-foreground">CSV Reports Processed</div>
         </div>
         
-        <div className="lz-card p-4">
+        <div className="revenue-card p-4">
           <div className="text-2xl font-bold text-green-500">{data?.reportId || 0}</div>
           <div className="text-sm text-muted-foreground">Latest Report ID</div>
         </div>
         
-        <div className="lz-card p-4">
+        <div className="revenue-card p-4">
           <div className="text-2xl font-bold text-foreground">{data?.totalApps?.toLocaleString() || 0}</div>
           <div className="text-sm text-muted-foreground">Total Apps in CSV</div>
         </div>
         
-        <div className="lz-card p-4">
+        <div className="revenue-card p-4">
           <div className="text-2xl font-bold text-green-500">{data?.appsLoaded?.toLocaleString() || 0}</div>
           <div className="text-sm text-muted-foreground">Apps Loaded</div>
         </div>
       </div>
 
-      <div className="lz-card p-4">
+      <div className="revenue-card p-4">
         <h3 className="font-bold mb-2 text-foreground">📊 Available CSV Columns ({data?.allKeys?.length || 0}):</h3>
         <div className="grid grid-cols-3 gap-2 text-sm">
           {data?.allKeys?.map((key: string, i: number) => (
@@ -111,7 +111,7 @@ export default function TestApi() {
         </div>
       </div>
 
-      <div className="lz-card p-4">
+      <div className="revenue-card p-4">
         <h3 className="font-bold mb-2 text-foreground">🎯 First App Sample:</h3>
         <pre className="text-xs bg-muted p-2 rounded overflow-auto text-foreground font-mono">
           {JSON.stringify(data?.firstApp, null, 2)}

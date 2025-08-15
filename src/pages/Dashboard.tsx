@@ -13,13 +13,12 @@ interface DashboardData {
 }
 
 const KPI = ({ label, value, trend }: { label: string; value: string; trend?: number[] }) => (
-  <Card className="lz-card lz-card-hover relative overflow-hidden group">
-    <div className="absolute inset-0 bg-gradient-to-br from-white/1 via-transparent to-white/1 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
-    <CardHeader className="pb-2 relative z-10">
-      <CardTitle className="text-xs text-muted-foreground font-medium tracking-wide uppercase">{label}</CardTitle>
+  <Card className="revenue-widget-card">
+    <CardHeader className="pb-2">
+      <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</CardTitle>
     </CardHeader>
-    <CardContent className="relative z-10">
-      <div className="text-2xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent dark:from-gray-100 dark:to-gray-300">
+    <CardContent>
+      <div className="text-2xl font-bold text-gray-900 dark:text-white">
         {value}
       </div>
       {trend && (
@@ -207,7 +206,7 @@ const Dashboard = () => {
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 relative z-10">
-        <Card className="lz-card lz-card-hover anim-enter relative overflow-hidden group">
+        <Card className="revenue-card revenue-card-hover anim-enter relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <CardHeader className="relative z-10">
             <CardTitle className="flex items-center justify-between">
@@ -231,7 +230,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="lz-card lz-card-hover anim-enter relative overflow-hidden group">
+        <Card className="revenue-card revenue-card-hover anim-enter relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <CardHeader className="relative z-10">
             <CardTitle>Quick Actions</CardTitle>
