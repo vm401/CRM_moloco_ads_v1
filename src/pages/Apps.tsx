@@ -167,41 +167,41 @@ const Apps: React.FC = () => {
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="rounded-2xl border-gray-200 dark:border-gray-800">
+        <Card className="revenue-widget-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spend</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              <span className="text-2xl font-bold metric-orange">
                 ${totalSpend.toLocaleString()}
               </span>
-              <TrendingUp className="w-4 h-4 text-green-500" />
+              <TrendingUp className="w-4 h-4 text-orange-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-gray-200 dark:border-gray-800">
+        <Card className="revenue-widget-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Actions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              <span className="text-2xl font-bold metric-green">
                 {totalActions.toLocaleString()}
               </span>
-              <Activity className="w-4 h-4 text-blue-500" />
+              <Activity className="w-4 h-4 text-green-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-gray-200 dark:border-gray-800">
+        <Card className="revenue-widget-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Average IPM</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              <span className="text-2xl font-bold metric-purple">
                 {avgIPM.toFixed(1)}
               </span>
               <TrendingUp className="w-4 h-4 text-purple-500" />

@@ -23,34 +23,93 @@
 }
 
 .dark {
-  /* Dark theme - RevenueCat colors */
-  --rc-bg-primary: #0d1117;
-  --rc-bg-secondary: #161b22;
-  --rc-bg-tertiary: #21262d;
-  --rc-border: #30363d;
-  --rc-border-light: #21262d;
+  /* Dark theme - точные цвета по фидбеку */
+  --rc-bg-primary: #1a1c20;        /* основной цвет фона */
+  --rc-bg-secondary: #232426;      /* фон таблиц и блоков */
+  --rc-bg-tertiary: #1e1e1e;       /* цвет блоков виджетов */
+  --rc-border: #2a2c30;
+  --rc-border-light: #232426;
   --rc-text-primary: #f0f6fc;
   --rc-text-secondary: #8b949e;
   --rc-text-tertiary: #6e7681;
-  --rc-accent-blue: #58a6ff;
-  --rc-accent-blue-hover: #388bfd;
-  --rc-accent-green: #3fb950;
+  --rc-accent-orange: #e79462;     /* первый акцентный цвет для графиков */
+  --rc-accent-green: #12d483;      /* второй акцентный цвет для графиков */
+  --rc-accent-purple: #5e73e1;     /* третий акцентный цвет для кнопок фильтров */
+  --rc-accent-blue: #5e73e1;       /* используем purple как основной blue */
+  --rc-accent-blue-hover: #4a5fd1;
   --rc-accent-red: #f85149;
-  --rc-accent-purple: #a5a5ff;
-  --rc-accent-orange: #ff8c42;
-  --rc-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --rc-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
-  --rc-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+  --rc-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --rc-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+  --rc-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
 }
 
-/* Global background */
+/* Global background and typography - RevenueCat style */
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+}
+
 body {
   background-color: var(--rc-bg-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
   font-size: 14px;
   line-height: 1.5;
   color: var(--rc-text-primary);
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
+
+/* Typography scale - RevenueCat style */
+h1, .text-3xl {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+h2, .text-2xl {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+h3, .text-xl {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+h4, .text-lg {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.text-base {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-sm {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.text-xs {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+/* Font weights */
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
 
 /* Rounded tables and cards */
 .revenue-table {
@@ -61,8 +120,7 @@ body {
   background-color: var(--rc-bg-secondary);
 }
 
-.revenue-card {
-  border-radius: 12px;
+.revenue-card {й  border-radius: 12px;
   border: 1px solid var(--rc-border);
   background-color: var(--rc-bg-secondary);
   box-shadow: var(--rc-shadow-sm);
@@ -196,40 +254,92 @@ body {
   color: rgb(252 165 165);
 }
 
-/* Metric cards */
+/* Metric cards - RevenueCat style */
 .revenue-metric-card {
-  background: linear-gradient(135deg, rgb(255 255 255) 0%, rgb(249 250 251) 100%);
-  border-radius: 1.5rem;
+  background: var(--rc-bg-secondary);
+  border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid rgb(229 231 235);
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  border: 1px solid var(--rc-border);
+  box-shadow: var(--rc-shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dark .revenue-metric-card {
-  background: linear-gradient(135deg, rgb(17 24 39) 0%, rgb(31 41 55) 100%);
-  border-color: rgb(55 65 81);
+.revenue-metric-card:hover {
+  box-shadow: var(--rc-shadow-md);
+  transform: translateY(-1px);
 }
 
-/* Buttons with RevenueCat styling */
+/* Widget cards - используем цвет блоков виджетов */
+.revenue-widget-card {
+  background: var(--rc-bg-tertiary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--rc-border);
+  box-shadow: var(--rc-shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.revenue-widget-card:hover {
+  box-shadow: var(--rc-shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Accent colors for different metrics */
+.metric-orange {
+  color: var(--rc-accent-orange);
+}
+
+.metric-green {
+  color: var(--rc-accent-green);
+}
+
+.metric-purple {
+  color: var(--rc-accent-purple);
+}
+
+/* Buttons with RevenueCat styling and new accent colors */
 .revenue-button {
-  border-radius: 0.75rem;
+  border-radius: 8px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  font-size: 14px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  letter-spacing: -0.01em;
 }
 
 .revenue-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  box-shadow: var(--rc-shadow-md);
 }
 
 .revenue-button-primary {
-  background: linear-gradient(135deg, rgb(59 130 246) 0%, rgb(37 99 235) 100%);
+  background: var(--rc-accent-purple);
   color: white;
   border: none;
 }
 
 .revenue-button-primary:hover {
-  background: linear-gradient(135deg, rgb(37 99 235) 0%, rgb(29 78 216) 100%);
+  background: var(--rc-accent-blue-hover);
+}
+
+.revenue-button-secondary {
+  background: var(--rc-accent-orange);
+  color: white;
+  border: none;
+}
+
+.revenue-button-secondary:hover {
+  background: #d67d4a;
+}
+
+.revenue-button-success {
+  background: var(--rc-accent-green);
+  color: white;
+  border: none;
+}
+
+.revenue-button-success:hover {
+  background: #0fb86f;
 }
 
 /* Input fields */

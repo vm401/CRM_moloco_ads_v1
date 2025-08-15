@@ -26,6 +26,7 @@ const ExchangesWithFilters = lazy(() => import("./pages/ExchangesWithFilters"));
 const InventoryWithFilters = lazy(() => import("./pages/InventoryWithFilters"));
 const CampaignsWithFilters = lazy(() => import("./pages/CampaignsWithFilters"));
 const UploadWithMulti = lazy(() => import("./pages/UploadWithMulti"));
+const Overview = lazy(() => import("./pages/Overview"));
 
 // Loading компонент
 const LoadingSpinner = () => (
@@ -53,10 +54,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           {/* Главная страница - редирект на Overview */}
-          <Route path="/" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></Layout>} />
+          <Route path="/" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Overview /></Suspense></Layout>} />
           
           {/* Основные страницы CRM */}
-          <Route path="/overview" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Dashboard /></Suspense></Layout>} />
+          <Route path="/overview" element={<Layout title="Overview"><Suspense fallback={<LoadingSpinner />}><Overview /></Suspense></Layout>} />
           <Route path="/campaigns" element={<Layout title="Campaigns"><Suspense fallback={<LoadingSpinner />}><CampaignsWithFilters /></Suspense></Layout>} />
           <Route path="/creatives" element={<Layout title="Creatives"><Suspense fallback={<LoadingSpinner />}><Creatives /></Suspense></Layout>} />
           <Route path="/apps" element={<Layout title="Apps"><Suspense fallback={<LoadingSpinner />}><Apps /></Suspense></Layout>} />
