@@ -137,15 +137,32 @@ h4, .text-lg {
   background-color: rgb(17 24 39);
 }
 
-/* Table headers with better styling */
+/* Table headers with RevenueCat styling */
 .revenue-table-header {
-  background-color: rgb(249 250 251);
-  border-bottom: 1px solid rgb(229 231 235);
+  background-color: var(--rc-bg-tertiary);
+  border-bottom: 1px solid var(--rc-border);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.01em;
 }
 
-.dark .revenue-table-header {
-  background-color: rgb(31 41 55);
-  border-bottom-color: rgb(55 65 81);
+/* Table cells with RevenueCat typography */
+.revenue-table-cell {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+.revenue-table-header-cell {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--rc-text-secondary);
 }
 
 /* Table rows with hover effects */

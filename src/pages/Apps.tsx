@@ -158,12 +158,7 @@ const Apps: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-2">
-        <Smartphone className="w-6 h-6 text-blue-600" />
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Apps Performance</h1>
-      </div>
+    <div className="space-y-6">{/* Content starts directly */}
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

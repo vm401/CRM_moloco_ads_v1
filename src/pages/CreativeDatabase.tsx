@@ -136,13 +136,8 @@ const CreativeDatabase: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Database className="w-6 h-6 text-pink-600" />
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Creative Database</h1>
-        </div>
-        
+      {/* Action Button */}
+      <div className="flex justify-end">
         <Button onClick={handleUpload} className="revenue-button revenue-button-primary">
           <Upload className="w-4 h-4 mr-2" />
           Upload Creative
