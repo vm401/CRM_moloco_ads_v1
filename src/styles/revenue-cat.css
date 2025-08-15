@@ -496,25 +496,7 @@ h4, .text-lg {
   border: 1px solid var(--rc-border) !important;
 }
 
-/* Исправляем таблицы в темной теме - УМЕРЕННО */
-.dark .revenue-table {
-  background: var(--rc-bg-secondary);
-  border: 1px solid var(--rc-border);
-  border-radius: 12px;
-  color: var(--rc-text-primary);
-}
-
-.dark .revenue-table th {
-  background: var(--rc-bg-tertiary);
-  color: var(--rc-text-primary);
-  border-bottom: 1px solid var(--rc-border);
-}
-
-.dark .revenue-table td {
-  background: var(--rc-bg-secondary);
-  color: var(--rc-text-primary);
-  border-bottom: 1px solid var(--rc-border);
-}
+/* Только цвета для таблиц в темной теме */
 
 /* Применяем RevenueCat шрифты - БЕЗ ЦВЕТОВ */
 .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
@@ -552,20 +534,9 @@ h4, .text-lg {
   transform: translateY(-1px);
 }
 
-/* ИСПРАВЛЯЕМ ТАБЛИЦЫ - ВОЗВРАЩАЕМ НОРМАЛЬНЫЕ РАЗМЕРЫ */
+/* ИСПРАВЛЯЕМ ТАБЛИЦЫ - КОМПАКТНЫЕ КАК РАНЬШЕ */
 .revenue-table {
-  border-radius: 12px !important;
+  border-radius: 12px;
 }
 
-.revenue-table th,
-.revenue-table-header-cell {
-  padding: 0.75rem 1rem !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-}
-
-.revenue-table td,
-.revenue-table-cell {
-  padding: 0.75rem 1rem !important;
-  font-size: 14px !important;
-}
+/* НЕ ПЕРЕОПРЕДЕЛЯЕМ РАЗМЕРЫ ТАБЛИЦ - ОСТАВЛЯЕМ КАК ЕСТЬ */
