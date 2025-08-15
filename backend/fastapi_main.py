@@ -31,8 +31,15 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TEMPORARY: Allow all origins for debugging
-    allow_credentials=False,  # Must be False when using allow_origins=["*"]
+    allow_origins=[
+        "http://localhost:5173", "http://localhost:5174", "http://localhost:5175",
+        "http://localhost:5176", "http://localhost:5177", "http://localhost:5180",
+        "http://localhost:8080", "http://localhost:8081", "http://localhost:3000",
+        "http://127.0.0.1:5173", "http://127.0.0.1:5174", "http://127.0.0.1:5175",
+        "http://127.0.0.1:5176", "http://127.0.0.1:5177", "http://127.0.0.1:5180",
+        "http://127.0.0.1:8080", "http://127.0.0.1:8081", "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -50,35 +57,6 @@ aggregated_data_cache = {
     'hash': None,
     'timestamp': None
 }
-
-# Persistent storage
-REPORTS_FILE = "processed_reports.json"
-
-def save_reports_to_file():
-    """Save processed reports to file for persistence"""
-    try:
-        with open(REPORTS_FILE, 'w') as f:
-            json.dump(processed_reports, f, default=str)
-        print(f"💾 Saved {len(processed_reports)} reports to file")
-    except Exception as e:
-        print(f"❌ Error saving reports: {e}")
-
-def load_reports_from_file():
-    """Load processed reports from file"""
-    global processed_reports
-    try:
-        if os.path.exists(REPORTS_FILE):
-            with open(REPORTS_FILE, 'r') as f:
-                processed_reports = json.load(f)
-            print(f"📂 Loaded {len(processed_reports)} reports from file")
-            return True
-        else:
-            print("📂 No saved reports file found")
-            return False
-    except Exception as e:
-        print(f"❌ Error loading reports: {e}")
-        processed_reports = []
-        return False
 
 # Thread pool for CPU-intensive operations
 executor = ThreadPoolExecutor(max_workers=2)
@@ -199,19 +177,6 @@ async def upload_csv(
         async with aiofiles.open(report_path, 'w') as f:
             await f.write(json.dumps(processed_data, ensure_ascii=False, indent=2, default=str))
         
-        # Extract available dates from CSV
-        available_dates = []
-        if 'Date' in detection_result.get('columns', []):
-            try:
-                import pandas as pd
-                df = pd.read_csv(filepath)
-                if 'Date' in df.columns:
-                    unique_dates = df['Date'].dropna().unique()
-                    available_dates = sorted([str(date) for date in unique_dates])
-                    print(f"📅 Found {len(available_dates)} unique dates: {available_dates[:5]}...")
-            except Exception as e:
-                print(f"⚠️ Error extracting dates: {e}")
-        
         # Create report info
         report_info = {
             'id': len(processed_reports) + 1,
@@ -221,15 +186,11 @@ async def upload_csv(
             'report_path': report_path,
             'csv_type': processor.csv_type,
             'rows': detection_result.get('rows', 0),
-            'columns': detection_result.get('columns', []),
-            'available_dates': available_dates  # Новое поле!
+            'columns': detection_result.get('columns', [])
         }
         
         # Store report info
         processed_reports.append(report_info)
-        
-        # Save to persistent storage
-        save_reports_to_file()
         
         return {
             "success": True,
@@ -244,10 +205,10 @@ async def upload_csv(
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
 @app.get("/reports")
-async def get_reports(date_filter: str = None, start_date: str = None, end_date: str = None, country: str = None):
-    """Get list of all processed reports with aggregated data, optionally filtered by date or date range"""
+async def get_reports():
+    """Get list of all processed reports with aggregated data"""
     # Get aggregated data from all reports
-    aggregated_data = aggregate_all_reports_data(date_filter, start_date, end_date, country)
+    aggregated_data = aggregate_all_reports_data()
     
     # Optimize response size by limiting reports metadata
     limited_reports = processed_reports[-10:] if len(processed_reports) > 10 else processed_reports
@@ -257,51 +218,6 @@ async def get_reports(date_filter: str = None, start_date: str = None, end_date:
         'reports': limited_reports,  # Only last 10 reports for metadata
         'total': len(processed_reports),
         **aggregated_data  # Add all aggregated data to response
-    }
-
-@app.get("/available-dates")
-async def get_available_dates():
-    """Get all unique dates from all uploaded CSV files"""
-    all_dates = set()
-    
-    for report in processed_reports:
-        dates = report.get('available_dates', [])
-        all_dates.update(dates)
-    
-    return {
-        'dates': sorted(list(all_dates)),
-        'count': len(all_dates)
-    }
-
-@app.get("/available-countries")
-async def get_available_countries():
-    """Get all available countries from uploaded reports"""
-    all_countries = set()
-    
-    # Get countries from the latest report
-    if processed_reports:
-        latest_reports = processed_reports[-1]
-        
-        # Try to get countries from CSV
-        if 'reports' in latest_reports:
-            try:
-                csv_file = latest_reports['reports']['report_path'].replace('_processed.json', '.csv')
-                if os.path.exists(csv_file):
-                    from moloco_processor import MolocoCSVProcessor
-                    processor = MolocoCSVProcessor()
-                    processor.load_and_detect_type(csv_file)
-                    
-                    # Get unique countries from CSV
-                    if processor.df is not None and 'Countries' in processor.df.columns:
-                        countries = processor.df['Countries'].dropna().unique().tolist()
-                        all_countries.update(countries)
-                        print(f"🌍 Found countries: {list(all_countries)[:10]}")
-            except Exception as e:
-                print(f"❌ Error getting countries: {e}")
-    
-    return {
-        "countries": sorted(list(all_countries)),
-        "count": len(all_countries)
     }
 
 @app.delete("/clear-reports")
@@ -380,25 +296,9 @@ async def get_report_data(report_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading report data: {str(e)}")
 
-def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, end_date: str = None, country: str = None):
-    """Aggregate data from all loaded reports and create daily breakdown
-    
-    Args:
-        date_filter: Optional single date string to filter data (e.g., '2024-01-15')
-        start_date: Optional start date for range filtering (e.g., '2024-01-15') 
-        end_date: Optional end date for range filtering (e.g., '2024-01-20')
-    """
+def aggregate_all_reports_data():
+    """Aggregate data from all loaded reports and create daily breakdown"""
     global aggregated_data_cache
-    start_time = datetime.now()
-    
-    if date_filter:
-        print(f"🔍 Aggregating data with single date filter: {date_filter}")
-    elif start_date and end_date:
-        print(f"🔍 Aggregating data with date range: {start_date} to {end_date}")
-    elif start_date:
-        print(f"🔍 Aggregating data from date: {start_date}")
-    else:
-        print("🔍 Aggregating all data")
     
     if not processed_reports:
         return {
@@ -412,19 +312,15 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
             'inventory_app_analysis': {'apps': [], 'categories': [], 'total_apps': 0}
         }
     
-    # Create hash of processed reports for cache validation including filters
-    cache_key = f"{len(processed_reports)}_{date_filter}_{start_date}_{end_date}_{country}"
-    reports_hash = hashlib.md5(cache_key.encode()).hexdigest()
+    # Create hash of processed reports for cache validation
+    reports_hash = hashlib.md5(str(len(processed_reports)).encode()).hexdigest()
     current_time = datetime.now()
     
-    # Skip cache if filtering is applied (always re-process filtered data)
-    use_cache = not (date_filter or start_date or end_date or country)
-    
-    # Check if we have valid cached data (less than 5 minutes old) and no filters
-    if (use_cache and aggregated_data_cache['data'] is not None and 
+    # Check if we have valid cached data (less than 30 seconds old)
+    if (aggregated_data_cache['data'] is not None and 
         aggregated_data_cache['hash'] == reports_hash and
         aggregated_data_cache['timestamp'] and
-        (current_time - aggregated_data_cache['timestamp']).seconds < 300):
+        (current_time - aggregated_data_cache['timestamp']).seconds < 30):
         print("🚀 Using cached aggregated data")
         return aggregated_data_cache['data']
     
@@ -458,62 +354,17 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
         'inventory_app_analysis': {'apps': [], 'categories': [], 'total_apps': 0}
     }
     
-    # Load reports data and apply date filtering
+    # Load reports data
     if 'reports' in latest_reports:
         try:
-            # Re-process the CSV with filtering if needed
-            if date_filter or start_date or end_date or country:
-                print(f"🔄 Re-processing reports CSV with filters: date={date_filter}, start={start_date}, end={end_date}, country={country}")
-                print(f"🔍 Latest reports keys: {list(latest_reports.keys())}")
-                print(f"🔍 Reports keys: {list(latest_reports['reports'].keys()) if 'reports' in latest_reports else 'No reports'}")
-                # Find the original CSV file
-                csv_file = latest_reports['reports']['report_path'].replace('_processed.json', '.csv')
-                print(f"🔍 CSV file path: {csv_file}")
-                print(f"🔍 CSV exists: {os.path.exists(csv_file)}")
-                if os.path.exists(csv_file):
-                    from moloco_processor import MolocoCSVProcessor
-                    processor = MolocoCSVProcessor()
-                    processor.load_and_detect_type(csv_file)
-                    print(f"🔍 CSV loaded, processing with filters...")
-                    filtered_data = processor.process_reports_csv(date_filter, start_date, end_date, country)
-                    print(f"🔍 Filtered data keys: {list(filtered_data.keys()) if isinstance(filtered_data, dict) else 'Not a dict'}")
-                    
-                    aggregated_data['overview'] = filtered_data.get('overview', {})
-                    aggregated_data['top_campaigns'] = filtered_data.get('top_campaigns', [])[:50]
-                    aggregated_data['creative_performance'] = filtered_data.get('creative_performance', {'top_performers': []})
-                    aggregated_data['exchange_performance'] = filtered_data.get('exchange_performance', [])[:20]
-                    aggregated_data['geographic_performance'] = filtered_data.get('geographic_performance', [])
-                    aggregated_data['gambling_insights'] = filtered_data.get('gambling_insights', {})
-                else:
-                    print(f"⚠️ Original CSV not found: {csv_file}")
-                    # Fallback to cached data
-                    with open(latest_reports['reports']['report_path'], 'r') as f:
-                        reports_data = json.load(f)
-                        aggregated_data['overview'] = reports_data.get('overview', {})
-                        aggregated_data['top_campaigns'] = reports_data.get('top_campaigns', [])[:50]
-                        aggregated_data['creative_performance'] = reports_data.get('creative_performance', {'top_performers': []})
-                        aggregated_data['exchange_performance'] = reports_data.get('exchange_performance', [])[:20]
-                        aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
-                    aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
-            else:
-                # Use cached data without filtering
-                with open(latest_reports['reports']['report_path'], 'r') as f:
-                    reports_data = json.load(f)
-                    aggregated_data['overview'] = reports_data.get('overview', {})
-                    # PERFORMANCE: Limit campaigns to top 50 for faster loading
-                    all_campaigns = reports_data.get('top_campaigns', [])
-                    aggregated_data['top_campaigns'] = all_campaigns[:50] if len(all_campaigns) > 50 else all_campaigns
-                    
-                    # Keep all creatives from reports (already limited to top 20 by spend in processor)
-                    creative_data = reports_data.get('creative_performance', {'top_performers': []})
-                    aggregated_data['creative_performance'] = creative_data
-                    
-                    # PERFORMANCE: Limit exchanges to top 20 for faster loading
-                    all_exchanges = reports_data.get('exchange_performance', [])
-                    aggregated_data['exchange_performance'] = all_exchanges[:20] if len(all_exchanges) > 20 else all_exchanges
-                    
-                    aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
-                    aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
+            with open(latest_reports['reports']['report_path'], 'r') as f:
+                reports_data = json.load(f)
+                aggregated_data['overview'] = reports_data.get('overview', {})
+                aggregated_data['top_campaigns'] = reports_data.get('top_campaigns', [])
+                aggregated_data['creative_performance'] = reports_data.get('creative_performance', {'top_performers': []})
+                aggregated_data['exchange_performance'] = reports_data.get('exchange_performance', [])
+                aggregated_data['geographic_performance'] = reports_data.get('geographic_performance', [])
+                aggregated_data['gambling_insights'] = reports_data.get('gambling_insights', {})
         except Exception as e:
             print(f"❌ Error loading reports data: {e}")
     
@@ -522,20 +373,7 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
         try:
             with open(latest_inventory['overall']['report_path'], 'r') as f:
                 inventory_data = json.load(f)
-                full_inventory = inventory_data.get('inventory_app_analysis', {'apps': [], 'categories': [], 'total_apps': 0})
-                
-                # PERFORMANCE OPTIMIZATION: Limit apps to top 100 by spend for faster loading
-                apps = full_inventory.get('apps', [])
-                if len(apps) > 100:
-                    # Sort by spend and take top 100
-                    apps = sorted(apps, key=lambda x: x.get('Spend', 0), reverse=True)[:100]
-                    print(f"⚡ Limited inventory apps from {full_inventory.get('total_apps', 0)} to {len(apps)} for performance")
-                
-                aggregated_data['inventory_app_analysis'] = {
-                    'apps': apps,
-                    'categories': full_inventory.get('categories', [])[:50],  # Limit categories too
-                    'total_apps': full_inventory.get('total_apps', 0)  # Keep real total for stats
-                }
+                aggregated_data['inventory_app_analysis'] = inventory_data.get('inventory_app_analysis', {'apps': [], 'categories': [], 'total_apps': 0})
         except Exception as e:
             print(f"❌ Error loading inventory overall data: {e}")
     
@@ -584,11 +422,6 @@ def aggregate_all_reports_data(date_filter: str = None, start_date: str = None, 
     aggregated_data_cache['data'] = aggregated_data
     aggregated_data_cache['hash'] = reports_hash
     aggregated_data_cache['timestamp'] = current_time
-    
-    # Log performance metrics
-    end_time = datetime.now()
-    processing_time = (end_time - start_time).total_seconds()
-    print(f"⚡ Aggregated data in {processing_time:.2f}s - Apps: {len(aggregated_data['inventory_app_analysis']['apps'])}, Campaigns: {len(aggregated_data['top_campaigns'])}, Creatives: {len(aggregated_data['creative_performance']['top_performers'])}")
     print("💾 Cached aggregated data for future requests")
     
     return aggregated_data
@@ -701,6 +534,181 @@ async def get_app_statistics():
         return stats
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get statistics: {str(e)}")
+
+# Date and country filtering endpoints
+@app.get("/available-dates")
+async def get_available_dates():
+    """Get available dates from processed data"""
+    try:
+        dates = set()
+        
+        # Extract dates from daily breakdown data
+        for report in processed_reports:
+            try:
+                with open(report['report_path'], 'r') as f:
+                    data = json.load(f)
+                    daily_breakdown = data.get('daily_breakdown', [])
+                    for day_data in daily_breakdown:
+                        if 'date' in day_data:
+                            dates.add(day_data['date'])
+            except Exception as e:
+                print(f"❌ Error reading dates from {report['filename']}: {e}")
+        
+        # If no dates found, generate some mock dates
+        if not dates:
+            from datetime import datetime, timedelta
+            base_date = datetime.now() - timedelta(days=14)
+            for i in range(14):
+                date = base_date + timedelta(days=i)
+                dates.add(date.strftime('%Y-%m-%d'))
+        
+        sorted_dates = sorted(list(dates))
+        
+        return {
+            "dates": sorted_dates,
+            "count": len(sorted_dates)
+        }
+        
+    except Exception as e:
+        print(f"❌ Error getting available dates: {e}")
+        return {"dates": [], "count": 0}
+
+@app.get("/available-countries")
+async def get_available_countries():
+    """Get available countries from processed data"""
+    try:
+        countries = set()
+        
+        # Extract countries from geographic performance data
+        for report in processed_reports:
+            try:
+                with open(report['report_path'], 'r') as f:
+                    data = json.load(f)
+                    geo_performance = data.get('geographic_performance', [])
+                    for geo_data in geo_performance:
+                        if 'country' in geo_data:
+                            countries.add(geo_data['country'])
+            except Exception as e:
+                print(f"❌ Error reading countries from {report['filename']}: {e}")
+        
+        # Add some common countries if none found
+        if not countries:
+            countries = {'US', 'GB', 'FR', 'DE', 'JP', 'AU', 'CA', 'BR', 'IN', 'RU'}
+        
+        return {
+            "countries": sorted(list(countries)),
+            "count": len(countries)
+        }
+        
+    except Exception as e:
+        print(f"❌ Error getting available countries: {e}")
+        return {"countries": [], "count": 0}
+
+# Filtered data endpoints
+@app.get("/reports/filtered")
+async def get_filtered_reports(
+    start_date: str = None,
+    end_date: str = None,
+    country: str = None
+):
+    """Get filtered reports data"""
+    try:
+        # Get all aggregated data
+        all_data = aggregate_all_reports_data()
+        
+        # Apply date filtering
+        if start_date or end_date:
+            filtered_daily = []
+            for day_data in all_data.get('daily_breakdown', []):
+                day_date = day_data.get('date', '')
+                
+                # Check date range
+                include_day = True
+                if start_date and day_date < start_date:
+                    include_day = False
+                if end_date and day_date > end_date:
+                    include_day = False
+                
+                if include_day:
+                    filtered_daily.append(day_data)
+            
+            all_data['daily_breakdown'] = filtered_daily
+        
+        # Apply country filtering
+        if country:
+            # Filter geographic performance
+            filtered_geo = []
+            for geo_data in all_data.get('geographic_performance', []):
+                if geo_data.get('country', '').upper() == country.upper():
+                    filtered_geo.append(geo_data)
+            
+            all_data['geographic_performance'] = filtered_geo
+        
+        return {
+            'success': True,
+            'filters': {
+                'start_date': start_date,
+                'end_date': end_date,
+                'country': country
+            },
+            **all_data
+        }
+        
+    except Exception as e:
+        print(f"❌ Error filtering reports: {e}")
+        raise HTTPException(status_code=500, detail=f"Error filtering reports: {str(e)}")
+
+# Pagination endpoint for creatives
+@app.get("/creatives")
+async def get_creatives(
+    page: int = 1,
+    per_page: int = 30,
+    sort_by: str = 'spend',
+    sort_order: str = 'desc'
+):
+    """Get paginated creative performance data"""
+    try:
+        # Get all aggregated data
+        all_data = aggregate_all_reports_data()
+        
+        # Get creative performance data
+        creatives = all_data.get('creative_performance', {}).get('top_performers', [])
+        
+        # Apply sorting
+        reverse = (sort_order.lower() == 'desc')
+        
+        if sort_by in ['spend', 'installs', 'actions'] and creatives:
+            creatives.sort(key=lambda x: x.get(sort_by, 0), reverse=reverse)
+        elif sort_by == 'creative_name' and creatives:
+            creatives.sort(key=lambda x: x.get('creative_name', ''), reverse=reverse)
+        
+        # Calculate pagination
+        total_creatives = len(creatives)
+        start_idx = (page - 1) * per_page
+        end_idx = start_idx + per_page
+        
+        paginated_creatives = creatives[start_idx:end_idx]
+        
+        return {
+            'success': True,
+            'creatives': paginated_creatives,
+            'pagination': {
+                'page': page,
+                'per_page': per_page,
+                'total': total_creatives,
+                'total_pages': (total_creatives + per_page - 1) // per_page,
+                'has_next': end_idx < total_creatives,
+                'has_prev': page > 1
+            },
+            'sorting': {
+                'sort_by': sort_by,
+                'sort_order': sort_order
+            }
+        }
+        
+    except Exception as e:
+        print(f"❌ Error getting paginated creatives: {e}")
+        raise HTTPException(status_code=500, detail=f"Error getting creatives: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

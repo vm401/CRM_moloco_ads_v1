@@ -17,7 +17,7 @@ export const DateFilter: React.FC<DateFilterProps> = ({ onDateChange, className 
       setLoading(true);
       try {
         const baseUrl = import.meta.env.PROD 
-          ? 'https://r3cstat.vercel.app/api' 
+          ? 'https://moloco-crm-backend.onrender.com' 
           : 'http://localhost:8000';
           
         const response = await fetch(`${baseUrl}/available-dates`);

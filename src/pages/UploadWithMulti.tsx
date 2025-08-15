@@ -46,7 +46,7 @@ export default function Upload() {
         formData.append('fileType', 'reports');
         
         uploadPromises.push(
-          fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/upload`, {
+          fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/upload`, {
             method: 'POST',
             body: formData,
           })
@@ -60,7 +60,7 @@ export default function Upload() {
         formData.append('fileType', 'inventory_daily');
         
         uploadPromises.push(
-          fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/upload`, {
+          fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/upload`, {
             method: 'POST',
             body: formData,
           })
@@ -74,7 +74,7 @@ export default function Upload() {
         formData.append('fileType', 'inventory_overall');
         
         uploadPromises.push(
-          fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/upload`, {
+          fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/upload`, {
             method: 'POST',
             body: formData,
           })

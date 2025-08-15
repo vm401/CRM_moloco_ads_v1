@@ -101,7 +101,7 @@ export default function Creatives() {
         console.log('🔄 Fetching creative data with pagination...');
         
         // Используем новый пагинированный API endpoint
-        let url = `${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/creatives`;
+        let url = `${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/creatives`;
         
         // Add pagination parameters
         const params = new URLSearchParams({
@@ -175,7 +175,7 @@ export default function Creatives() {
     try {
       console.log('🔄 Applying filters and fetching data...');
       
-      let url = `${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports?` + Date.now();
+      let url = `${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now();
       
       // Add date range parameters
       if (dateRange.start && dateRange.end) {
@@ -238,7 +238,7 @@ export default function Creatives() {
       try {
         console.log('🔄 Resetting filters and fetching all data...');
         
-        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports?` + Date.now(), {
+        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports?` + Date.now(), {
           cache: 'no-cache',
           headers: {
             'Cache-Control': 'no-cache'

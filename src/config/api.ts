@@ -4,7 +4,7 @@
 
 // Определяем базовый URL для API
 export const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://r3cstat.vercel.app/api'  // Production Vercel URL
+  ? 'https://moloco-crm-backend.onrender.com'  // Production Render URL (WORKING!)
   : 'http://localhost:8000';  // Development URL
 
 // API endpoints

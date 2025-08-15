@@ -142,7 +142,7 @@ export default function Inventory() {
         console.log('🔄 Fetching inventory data...');
         
         // Получаем список отчетов
-        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports`);
+        const reportsResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports`);
         const reports = await reportsResponse.json();
         
         if (reports.success && reports.reports && reports.reports.length > 0) {
@@ -150,7 +150,7 @@ export default function Inventory() {
           console.log(`📊 Latest report ID: ${latestReportId}`);
           
           // Получаем данные отчета
-          const dashboardResponse = await fetch(`${import.meta.env.PROD ? 'https://r3cstat.vercel.app/api' : 'http://localhost:8000'}/reports/${latestReportId}/data`);
+          const dashboardResponse = await fetch(`${import.meta.env.PROD ? 'https://moloco-crm-backend.onrender.com' : 'http://localhost:8000'}/reports/${latestReportId}/data`);
           const dashboardData = await dashboardResponse.json();
           
           if (dashboardData.success && dashboardData.data.inventory_app_analysis) {

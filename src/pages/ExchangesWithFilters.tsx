@@ -61,7 +61,7 @@ const Exchanges = () => {
     setLoading(true);
     try {
       const apiUrl = import.meta.env.PROD 
-        ? 'https://r3cstat.vercel.app/api'
+        ? 'https://moloco-crm-backend.onrender.com'
         : 'http://localhost:8000';
       
       const params = new URLSearchParams();
