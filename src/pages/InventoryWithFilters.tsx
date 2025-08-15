@@ -285,7 +285,7 @@ const Inventory = () => {
               <TableHeader className="revenue-table-header">
                 <TableRow>
                   {columnOrder.filter(col => visibleColumns.has(col)).map((column) => (
-                    <TableHead key={column} className="revenue-table-header-cell">
+                    <TableHead key={column} className="revenue-table-header-cell sortable">
                       <Button
                         variant="ghost"
                         onClick={() => {

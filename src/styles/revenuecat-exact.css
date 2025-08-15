@@ -297,22 +297,35 @@ body, p, span, div, td, th, input, textarea, select {
   border-right: 3px solid var(--rc-accent-green);
 }
 
-/* DRAG & DROP СТИЛИ ДЛЯ ТАБЛИЦ */
-.table th.sortable, .revenue-table th.sortable, table th.sortable {
-  cursor: grab;
+/* DRAG & DROP СТИЛИ ДЛЯ ТАБЛИЦ - БОЛЕЕ ШИРОКИЕ СЕЛЕКТОРЫ */
+.table th.sortable, .revenue-table th.sortable, table th.sortable,
+.revenue-table-header-cell.sortable, th.sortable {
+  cursor: grab !important;
   user-select: none;
   position: relative;
+  transition: all 0.2s ease;
 }
 
-.table th.sortable:hover, .revenue-table th.sortable:hover, table th.sortable:hover {
-  background: var(--rc-accent-blue);
-  color: #ffffff;
+.table th.sortable:hover, .revenue-table th.sortable:hover, table th.sortable:hover,
+.revenue-table-header-cell.sortable:hover, th.sortable:hover {
+  background: var(--rc-accent-blue) !important;
+  color: #ffffff !important;
   transform: translateY(-1px);
 }
 
-.table th.sortable:active, .revenue-table th.sortable:active, table th.sortable:active {
-  cursor: grabbing;
+.table th.sortable:active, .revenue-table th.sortable:active, table th.sortable:active,
+.revenue-table-header-cell.sortable:active, th.sortable:active {
+  cursor: grabbing !important;
   transform: scale(1.02);
+}
+
+/* Кнопки внутри sortable заголовков */
+.sortable Button, .sortable button {
+  cursor: grab !important;
+}
+
+.sortable:hover Button, .sortable:hover button {
+  color: #ffffff !important;
 }
 
 /* Индикатор сортировки */
