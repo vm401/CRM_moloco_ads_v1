@@ -260,11 +260,10 @@ body, p, span, div, td, th, input, textarea, select {
   transition: all 0.2s ease;
 }
 
-/* КОНТРАСТНЫЕ ПОДСВЕТКИ ЯЧЕЕК С ДАННЫМИ */
+/* КОНТРАСТНЫЕ ПОДСВЕТКИ ЯЧЕЕК БЕЗ СКРУГЛЕНИЙ */
 .table td:not(:empty), .revenue-table td:not(:empty), table td:not(:empty) {
   background: rgba(127, 148, 255, 0.08) !important; /* Прозрачный синий для светлой темы */
-  border-radius: 6px;
-  margin: 2px;
+  /* Убираем border-radius и margin для цельности */
   box-shadow: inset 0 0 0 1px rgba(127, 148, 255, 0.1);
 }
 
