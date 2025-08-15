@@ -4,7 +4,7 @@
 
 // Определяем базовый URL для API
 export const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://crm-moloco-ads-v1-production.up.railway.app'  // Production Railway URL
+  ? 'https://moloco-crm-backend.onrender.com'  // Production Render URL
   : 'http://localhost:8000';  // Development URL
 
 // API endpoints
