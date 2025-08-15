@@ -1,4 +1,4 @@
-/* RevenueCat 1:1 Exact Copy - На основе скриншотов и данных */
+/* RevenueCat 1:1 Exact Copy - На основе скриншотов и данных v2.0 */
 
 /* Import точных шрифтов */
 @import '@fontsource/inter/400.css';
@@ -269,11 +269,44 @@ input:focus, textarea:focus, select:focus {
   border-right: 1px solid var(--rc-border);
 }
 
-/* Global body */
+/* Global body - ПРИНУДИТЕЛЬНО */
 body {
-  background-color: var(--rc-bg-primary);
+  background-color: var(--rc-bg-primary) !important;
   margin: 0;
   padding: 0;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* КРИТИЧНО: Принудительные стили для видимости изменений */
+.dark body {
+  background-color: #1a1b23 !important;
+  color: #ffffff !important;
+}
+
+body {
+  background-color: #fafbfc !important;
+  color: #1a1a1a !important;
+}
+
+/* Все main контейнеры */
+main, [role="main"], .main-content {
+  background-color: var(--rc-bg-primary) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Все карточки ПРИНУДИТЕЛЬНО */
+.card, .Card, [class*="card"], [class*="Card"], .revenue-card {
+  background-color: var(--rc-bg-card) !important;
+  border: 1px solid var(--rc-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--rc-shadow-card) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Все заголовки ПРИНУДИТЕЛЬНО Work Sans */
+h1, h2, h3, h4, h5, h6, .heading-1, .heading-2, .heading-3, .heading-4 {
+  font-family: 'Work Sans', 'Inter', sans-serif !important;
+  color: var(--rc-text-primary) !important;
 }
 
 /* Убираем старые стили и применяем новые глобально */
