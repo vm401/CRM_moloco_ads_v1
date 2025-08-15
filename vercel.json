@@ -3,16 +3,5 @@
     "api/index.py": {
       "runtime": "python3.9"
     }
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.py"
-    }
-  ],
-  "build": {
-    "env": {
-      "PYTHONPATH": "$PYTHONPATH:/var/task"
-    }
   }
 }

@@ -344,9 +344,8 @@ async def clear_reports():
             'message': f'Error clearing reports: {str(e)}'
         }
 
-# Export the app for Vercel
-def handler(request, response):
-    return app(request, response)
+# Export the app for Vercel - THIS IS THE REQUIRED VARIABLE!
+handler = app
 
 # For local development
 if __name__ == "__main__":
