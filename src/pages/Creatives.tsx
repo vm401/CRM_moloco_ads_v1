@@ -396,7 +396,7 @@ export default function Creatives() {
         </div>
 
         {/* Фильтры */}
-        <Card className="lz-card">
+        <Card className="revenue-card">
           <CardContent className="pt-6">
             <div className="flex items-center gap-4 mb-4">
               {/* Фильтр по дате */}
@@ -458,11 +458,11 @@ export default function Creatives() {
         </Card>
 
         {/* Основная таблица */}
-        <Card className="lz-card">
+        <Card className="revenue-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              🎨 Creative Performance Analysis
-              <span className="text-sm font-normal text-muted-foreground">
+            <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
+              Creative Performance Analysis
+              <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                 ({filteredAndSortedCreatives.length} creatives)
               </span>
             </CardTitle>
@@ -572,7 +572,7 @@ export default function Creatives() {
         {/* Статистика */}
         {data.creatives.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="lz-card">
+            <Card className="revenue-card">
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold text-primary">
                   {formatNumber(data.total_creatives)}
@@ -581,7 +581,7 @@ export default function Creatives() {
               </CardContent>
             </Card>
             
-            <Card className="lz-card">
+            <Card className="revenue-card">
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold text-foreground">
                   {formatCurrency(filteredAndSortedCreatives.reduce((sum, cr) => sum + (cr.Spend || 0), 0))}
@@ -590,7 +590,7 @@ export default function Creatives() {
               </CardContent>
             </Card>
             
-            <Card className="lz-card">
+            <Card className="revenue-card">
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold text-green-600">
                   {formatNumber(filteredAndSortedCreatives.reduce((sum, cr) => sum + (cr.Install || 0), 0))}
@@ -599,7 +599,7 @@ export default function Creatives() {
               </CardContent>
             </Card>
             
-            <Card className="lz-card">
+            <Card className="revenue-card">
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold text-blue-600">
                   {formatNumber(filteredAndSortedCreatives.reduce((sum, cr) => sum + (cr.Action || 0), 0))}
