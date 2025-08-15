@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import RevenueCatMetricCard from "@/components/RevenueCatMetricCard";
 import { Smartphone, Apple, Bot, TrendingUp, TrendingDown, Activity } from "lucide-react";
 
 interface AppData {
@@ -160,50 +161,29 @@ const Apps: React.FC = () => {
   return (
     <div className="space-y-6">{/* Content starts directly */}
 
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="revenue-widget-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spend</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold metric-orange">
-                ${totalSpend.toLocaleString()}
-              </span>
-              <TrendingUp className="w-4 h-4 text-orange-500" />
-            </div>
-          </CardContent>
-        </Card>
+              {/* Overview Cards - RevenueCat Style */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <RevenueCatMetricCard
+            title="Total Spend"
+            value={`$${totalSpend.toLocaleString()}`}
+            subtitle="All apps"
+            icon={<TrendingUp className="w-4 h-4" />}
+          />
 
-        <Card className="revenue-widget-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold metric-green">
-                {totalActions.toLocaleString()}
-              </span>
-              <Activity className="w-4 h-4 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
+          <RevenueCatMetricCard
+            title="Total Actions"
+            value={totalActions.toLocaleString()}
+            subtitle="All apps"
+            icon={<Activity className="w-4 h-4" />}
+          />
 
-        <Card className="revenue-widget-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Average IPM</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold metric-purple">
-                {avgIPM.toFixed(1)}
-              </span>
-              <TrendingUp className="w-4 h-4 text-purple-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          <RevenueCatMetricCard
+            title="Average IPM"
+            value={avgIPM.toFixed(1)}
+            subtitle="All apps"
+            icon={<TrendingUp className="w-4 h-4" />}
+          />
+        </div>
 
       {/* Apps Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">

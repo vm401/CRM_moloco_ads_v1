@@ -276,10 +276,51 @@ body {
   padding: 0;
 }
 
-/* Убираем старые стили */
-.lz-card {
+/* Убираем старые стили и применяем новые глобально */
+.lz-card, .revenue-widget-card, .revenue-metric-card {
   background: var(--rc-bg-card) !important;
   border: 1px solid var(--rc-border) !important;
   border-radius: 12px !important;
   box-shadow: var(--rc-shadow-card) !important;
+  padding: 20px !important;
 }
+
+/* Применяем новые стили ко всем элементам */
+* {
+  box-sizing: border-box;
+}
+
+/* Все заголовки */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--rc-text-primary) !important;
+}
+
+/* Все параграфы и спаны */
+p, span, div {
+  color: var(--rc-text-primary);
+}
+
+/* Все карточки */
+[class*="card"], [class*="Card"] {
+  background: var(--rc-bg-card);
+  border: 1px solid var(--rc-border);
+  border-radius: 12px;
+  box-shadow: var(--rc-shadow-card);
+}
+
+/* Все кнопки */
+[class*="btn"], [class*="button"], [class*="Button"] {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Глобальные классы для быстрого применения */
+.rc-text-primary { color: var(--rc-text-primary) !important; }
+.rc-text-secondary { color: var(--rc-text-secondary) !important; }
+.rc-text-tertiary { color: var(--rc-text-tertiary) !important; }
+.rc-bg-primary { background-color: var(--rc-bg-primary) !important; }
+.rc-bg-secondary { background-color: var(--rc-bg-secondary) !important; }
+.rc-bg-card { background-color: var(--rc-bg-card) !important; }
+.rc-border { border-color: var(--rc-border) !important; }
