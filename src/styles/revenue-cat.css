@@ -23,24 +23,24 @@
 }
 
 .dark {
-  /* Dark theme - точные цвета по фидбеку */
-  --rc-bg-primary: #1a1c20;        /* основной цвет фона */
-  --rc-bg-secondary: #232426;      /* фон таблиц и блоков */
-  --rc-bg-tertiary: #1e1e1e;       /* цвет блоков виджетов */
-  --rc-border: #2a2c30;
-  --rc-border-light: #232426;
-  --rc-text-primary: #f0f6fc;
-  --rc-text-secondary: #8b949e;
-  --rc-text-tertiary: #6e7681;
-  --rc-accent-orange: #e79462;     /* первый акцентный цвет для графиков */
-  --rc-accent-green: #12d483;      /* второй акцентный цвет для графиков */
-  --rc-accent-purple: #5e73e1;     /* третий акцентный цвет для кнопок фильтров */
-  --rc-accent-blue: #5e73e1;       /* используем purple как основной blue */
-  --rc-accent-blue-hover: #4a5fd1;
-  --rc-accent-red: #f85149;
-  --rc-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
-  --rc-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
-  --rc-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+  /* Dark theme - RevenueCat точные цвета */
+  --rc-bg-primary: #1a1b23;        /* основной фон как в RevenueCat */
+  --rc-bg-secondary: #2a2d3a;      /* фон карточек и блоков */
+  --rc-bg-tertiary: #353849;       /* фон виджетов */
+  --rc-border: #3f4354;            /* границы */
+  --rc-border-light: #2a2d3a;
+  --rc-text-primary: #ffffff;      /* основной текст белый */
+  --rc-text-secondary: #b4bcd0;    /* вторичный текст */
+  --rc-text-tertiary: #8b93a7;     /* третичный текст */
+  --rc-accent-orange: #ff8a65;     /* оранжевый акцент */
+  --rc-accent-green: #4caf50;      /* зеленый акцент */
+  --rc-accent-purple: #7c4dff;     /* фиолетовый акцент */
+  --rc-accent-blue: #2196f3;       /* синий акцент */
+  --rc-accent-blue-hover: #1976d2;
+  --rc-accent-red: #f44336;        /* красный акцент */
+  --rc-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --rc-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --rc-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
 /* Global background and typography - RevenueCat style */
@@ -436,4 +436,115 @@ h4, .text-lg {
 
 .dark .revenue-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgb(107 114 128);
+}
+
+/* Исправление засветов на кнопках в темной теме */
+.dark button, 
+.dark .btn,
+.dark .button {
+  background: var(--rc-bg-secondary) !important;
+  border: 1px solid var(--rc-border) !important;
+  color: var(--rc-text-primary) !important;
+  box-shadow: none !important;
+}
+
+.dark button:hover,
+.dark .btn:hover,
+.dark .button:hover {
+  background: var(--rc-bg-tertiary) !important;
+  border-color: var(--rc-accent-blue) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Исправление для всех ShadCN кнопок */
+.dark .bg-primary {
+  background: var(--rc-accent-blue) !important;
+}
+
+.dark .bg-primary:hover {
+  background: var(--rc-accent-blue-hover) !important;
+}
+
+.dark .bg-secondary {
+  background: var(--rc-bg-secondary) !important;
+  border: 1px solid var(--rc-border) !important;
+}
+
+.dark .bg-secondary:hover {
+  background: var(--rc-bg-tertiary) !important;
+}
+
+/* Убираем все градиенты и засветы в темной теме */
+.dark * {
+  background-image: none !important;
+}
+
+/* Исправляем карточки и блоки */
+.dark .lz-card,
+.dark .revenue-card,
+.dark .revenue-widget-card {
+  background: var(--rc-bg-secondary) !important;
+  border: 1px solid var(--rc-border) !important;
+  box-shadow: var(--rc-shadow-sm) !important;
+}
+
+.dark .revenue-metric-card {
+  background: var(--rc-bg-tertiary) !important;
+  border: 1px solid var(--rc-border) !important;
+}
+
+/* Исправляем все таблицы в темной теме */
+.dark table,
+.dark .table,
+.dark .revenue-table {
+  background: var(--rc-bg-secondary) !important;
+  border: 1px solid var(--rc-border) !important;
+  border-radius: 12px !important;
+  color: var(--rc-text-primary) !important;
+}
+
+.dark table th,
+.dark .table th,
+.dark .revenue-table th,
+.dark .revenue-table-header-cell {
+  background: var(--rc-bg-tertiary) !important;
+  color: var(--rc-text-primary) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  letter-spacing: -0.01em !important;
+  border-bottom: 1px solid var(--rc-border) !important;
+}
+
+.dark table td,
+.dark .table td,
+.dark .revenue-table td,
+.dark .revenue-table-cell {
+  background: var(--rc-bg-secondary) !important;
+  color: var(--rc-text-primary) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  border-bottom: 1px solid var(--rc-border) !important;
+}
+
+/* Применяем RevenueCat шрифты ко всем элементам */
+.dark *,
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
+.dark p, .dark span, .dark div, .dark td, .dark th,
+.dark button, .dark input, .dark textarea, .dark select {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', 'Helvetica Neue', Arial, sans-serif !important;
+  color: var(--rc-text-primary) !important;
+}
+
+/* Исправляем вторичный текст */
+.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-400 {
+  color: var(--rc-text-secondary) !important;
+}
+
+/* Исправляем третичный текст */
+.dark .text-gray-300,
+.dark .text-gray-700 {
+  color: var(--rc-text-tertiary) !important;
 }
