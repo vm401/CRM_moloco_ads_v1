@@ -179,50 +179,123 @@ body, p, span, div, td, th, input, textarea, select {
   border-color: #555555;
 }
 
-/* Карточки - точно как в RevenueCat */
+/* Карточки как на 110% зуме - увеличенные размеры */
 .card, .revenue-card, .revenue-widget-card, .revenue-metric-card {
   background: var(--rc-bg-card);
   border: 1px solid var(--rc-border);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px; /* Увеличено с 12px */
+  padding: 24px; /* Увеличено с 20px */
   box-shadow: var(--rc-shadow-card);
   transition: all 0.2s ease;
+  min-height: 140px; /* Минимальная высота как на скрине */
+  font-size: 15px; /* Увеличенный шрифт */
 }
 
 .card:hover, .revenue-card:hover {
   box-shadow: var(--rc-shadow-md);
-  transform: translateY(-1px);
+  transform: translateY(-2px); /* Увеличенный подъем */
 }
 
-/* Таблицы - сохраняем логику, улучшаем стили */
-.table, .revenue-table {
+/* Заголовки в карточках увеличены */
+.card h1, .card h2, .card h3, .card h4,
+.revenue-card h1, .revenue-card h2, .revenue-card h3, .revenue-card h4 {
+  font-size: 1.1em; /* Увеличено на 10% */
+  margin-bottom: 12px; /* Увеличенные отступы */
+}
+
+/* Значения в карточках увеличены */
+.card .text-2xl, .revenue-card .text-2xl {
+  font-size: 2.2rem !important; /* Увеличено с 2rem */
+  line-height: 2.4rem !important;
+}
+
+.card .text-xl, .revenue-card .text-xl {
+  font-size: 1.4rem !important; /* Увеличено с 1.25rem */
+}
+
+.card .text-lg, .revenue-card .text-lg {
+  font-size: 1.2rem !important; /* Увеличено с 1.125rem */
+}
+
+/* ЦЕЛЬНЫЕ ТАБЛИЦЫ С КОНТРАСТНЫМИ ПОДСВЕТКАМИ */
+.table, .revenue-table, table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background: var(--rc-bg-card);
   border: 1px solid var(--rc-border);
   border-radius: 12px;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
+  box-shadow: var(--rc-shadow-card);
 }
 
-.table th, .revenue-table th {
+.table th, .revenue-table th, table th {
   background: var(--rc-bg-tertiary);
   color: var(--rc-text-primary);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 20px;
-  font-weight: 700;
-  padding: 12px 16px;
+  font-weight: 600;
+  padding: 16px 20px;
   text-align: left;
-  border-bottom: 1px solid var(--rc-border);
+  border-bottom: 2px solid var(--rc-border);
+  position: relative;
+  user-select: none;
+  cursor: grab;
 }
 
-.table td, .revenue-table td {
+.table th:hover, .revenue-table th:hover, table th:hover {
+  background: var(--rc-bg-primary);
+  color: var(--rc-accent-blue);
+}
+
+.table td, .revenue-table td, table td {
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
-  padding: 12px 16px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--rc-border-light);
   color: var(--rc-text-primary);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* КОНТРАСТНЫЕ ПОДСВЕТКИ ЯЧЕЕК С ДАННЫМИ */
+.table td:not(:empty), .revenue-table td:not(:empty), table td:not(:empty) {
+  background: rgba(127, 148, 255, 0.08) !important; /* Прозрачный синий для светлой темы */
+  border-radius: 6px;
+  margin: 2px;
+  box-shadow: inset 0 0 0 1px rgba(127, 148, 255, 0.1);
+}
+
+.dark .table td:not(:empty), 
+.dark .revenue-table td:not(:empty), 
+.dark table td:not(:empty) {
+  background: rgba(47, 242, 161, 0.12) !important; /* Прозрачный зеленый для темной темы */
+  box-shadow: inset 0 0 0 1px rgba(47, 242, 161, 0.15);
+}
+
+/* Hover эффекты для ячеек */
+.table td:hover, .revenue-table td:hover, table td:hover {
+  background: rgba(127, 148, 255, 0.15) !important;
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(127, 148, 255, 0.2);
+}
+
+.dark .table td:hover, 
+.dark .revenue-table td:hover, 
+.dark table td:hover {
+  background: rgba(47, 242, 161, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(47, 242, 161, 0.3);
+}
+
+/* Первая и последняя ячейка в строке */
+.table td:first-child, .revenue-table td:first-child, table td:first-child {
+  border-left: 3px solid var(--rc-accent-blue);
+}
+
+.table td:last-child, .revenue-table td:last-child, table td:last-child {
+  border-right: 3px solid var(--rc-accent-green);
 }
 
 /* Links - точные стили */
@@ -287,10 +360,37 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 3px rgba(127, 148, 255, 0.1);
 }
 
-/* Sidebar с акцентами */
+/* Sidebar с правильными размерами как на 125% зуме */
 .sidebar {
   background: var(--rc-bg-secondary);
   border-right: 1px solid var(--rc-border);
+  transition: width 0.3s ease;
+}
+
+/* Ширина как на 125% зуме - увеличенная для скрученного вида */
+.sidebar.collapsed {
+  width: 80px !important; /* Увеличено с обычных 64px */
+}
+
+.sidebar:not(.collapsed) {
+  width: 280px !important; /* Увеличено с обычных 256px */
+}
+
+/* Для компонента Sidebar */
+.w-64 {
+  width: 280px !important;
+}
+
+.w-16 {
+  width: 80px !important;
+}
+
+.w-20 {
+  width: 80px !important;
+}
+
+.w-80 {
+  width: 280px !important;
 }
 
 /* Активные элементы навигации */
